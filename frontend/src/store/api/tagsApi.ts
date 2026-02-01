@@ -9,6 +9,11 @@ interface CreateTagRequest {
   name: string;
 }
 
+interface UpdateTagRequest {
+  id: string;
+  name: string;
+}
+
 export const tagsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTags: builder.query<TagsResponse, void>({
@@ -25,6 +30,15 @@ export const tagsApi = baseApi.injectEndpoints({
       invalidatesTags: ['Tags', 'Stats'],
     }),
 
+    updateTag: builder.mutation<Tag, UpdateTagRequest>({
+      query: ({ id, name }) => ({
+        url: `/api/tags/${id}`,
+        method: 'PUT',
+        body: { name },
+      }),
+      invalidatesTags: ['Tags'],
+    }),
+
     deleteTag: builder.mutation<void, string>({
       query: (id) => ({
         url: `/api/tags/${id}`,
@@ -35,4 +49,9 @@ export const tagsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetTagsQuery, useCreateTagMutation, useDeleteTagMutation } = tagsApi;
+export const {
+  useGetTagsQuery,
+  useCreateTagMutation,
+  useUpdateTagMutation,
+  useDeleteTagMutation,
+} = tagsApi;

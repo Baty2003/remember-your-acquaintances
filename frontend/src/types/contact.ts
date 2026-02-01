@@ -1,8 +1,31 @@
 export type AgeType = 'exact' | 'approximate';
+export type HeightType = 'exact' | 'approximate';
+export type Gender = 'male' | 'female';
+export type ContactLinkType = 'phone' | 'telegram' | 'instagram' | 'vk' | 'other';
+
+export interface ContactLink {
+  id: string;
+  type: ContactLinkType;
+  label?: string | null;
+  value: string;
+}
+
+export interface ContactLinkInput {
+  type: ContactLinkType;
+  label?: string;
+  value: string;
+}
 
 export interface Tag {
   id: string;
   name: string;
+  createdAt: string;
+}
+
+export interface MeetingPlace {
+  id: string;
+  name: string;
+  createdAt: string;
 }
 
 export interface Note {
@@ -16,15 +39,22 @@ export interface Note {
 export interface Contact {
   id: string;
   name: string;
+  gender?: Gender;
   age?: number;
   ageType?: AgeType;
-  height?: string;
+  height?: number;
+  heightType?: HeightType;
   occupation?: string;
   occupationDetails?: string;
   whereMet?: string;
   howMet?: string;
+  details?: string;
+  metAt?: string;
   photo?: string;
   tags: Tag[];
+  meetingPlace?: MeetingPlace | null;
+  meetingPlaceId?: string | null;
+  links?: ContactLink[];
   notes?: Note[];
   createdAt: string;
   updatedAt: string;
@@ -32,14 +62,20 @@ export interface Contact {
 
 export interface CreateContactRequest {
   name: string;
+  gender?: Gender;
   age?: number;
   ageType?: AgeType;
-  height?: string;
+  height?: number;
+  heightType?: HeightType;
   occupation?: string;
   occupationDetails?: string;
   whereMet?: string;
   howMet?: string;
+  details?: string;
+  metAt?: string;
   tagIds?: string[];
+  meetingPlaceId?: string | null;
+  links?: ContactLinkInput[];
 }
 
 export type UpdateContactRequest = Partial<CreateContactRequest>;

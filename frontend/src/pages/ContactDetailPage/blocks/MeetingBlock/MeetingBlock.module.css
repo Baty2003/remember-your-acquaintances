@@ -1,0 +1,29 @@
+.meetingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meetingRow {
+  display: flex;
+  gap: 32px;
+}
+
+.meetingItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.howMet {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.howMetText {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  margin: 0 !important;
+}

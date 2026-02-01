@@ -11,25 +11,30 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  username  String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  contacts  Contact[]
-  tags      Tag[]
+  id            String         @id @default(cuid())
+  username      String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  contacts      Contact[]
+  tags          Tag[]
+  meetingPlaces MeetingPlace[]
 }
 
 model Contact {
   id                String   @id @default(cuid())
   name              String
+  gender            String?  // 'male' | 'female'
   age               Int?
   ageType           String?  // 'exact' | 'approximate'
-  height            String?
+  height            Int?
+  heightType        String?  // 'exact' | 'approximate'
   occupation        String?
   occupationDetails String?
   whereMet          String?
   howMet            String?
+  details           String?
+  metAt             DateTime @default(now())
   photo             String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -37,15 +42,21 @@ model Contact {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  meetingPlaceId String?
+  meetingPlace   MeetingPlace? @relation(fields: [meetingPlaceId], references: [id])
+
   notes Note[]
   tags  Tag[]  @relation("ContactTags")
+  links ContactLink[]
 
   @@index([userId])
+  @@index([meetingPlaceId])
 }
 
 model Tag {
-  id   String @id @default(cuid())
-  name String
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -56,11 +67,37 @@ model Tag {
   @@index([userId])
 }
 
+model MeetingPlace {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  contacts Contact[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
 model Note {
   id          String   @id @default(cuid())
   title       String
   description String
   createdAt   DateTime @default(now())
+
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+}
+
+model ContactLink {
+  id        String @id @default(cuid())
+  type      String // 'phone' | 'telegram' | 'instagram' | 'vk' | 'other'
+  label     String? // Custom label for 'other' type
+  value     String
 
   contactId String
   contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)

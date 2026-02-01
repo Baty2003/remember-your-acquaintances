@@ -1,0 +1,8 @@
+.metadata {
+  display: flex;
+  gap: 24px;
+}
+
+.metaText {
+  font-size: 13px;
+}

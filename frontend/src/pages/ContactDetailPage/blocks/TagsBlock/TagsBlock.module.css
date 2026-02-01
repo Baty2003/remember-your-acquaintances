@@ -1,0 +1,11 @@
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tags :global(.ant-tag) {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 16px;
+}

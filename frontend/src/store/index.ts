@@ -30,5 +30,10 @@ export {
   useGetStatsQuery,
   useGetTagsQuery,
   useCreateTagMutation,
+  useUpdateTagMutation,
   useDeleteTagMutation,
+  useGetMeetingPlacesQuery,
+  useCreateMeetingPlaceMutation,
+  useUpdateMeetingPlaceMutation,
+  useDeleteMeetingPlaceMutation,
 } from './api';

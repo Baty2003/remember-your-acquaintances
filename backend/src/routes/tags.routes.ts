@@ -41,6 +41,30 @@ export async function tagsRoutes(fastify: FastifyInstance) {
     }
   });
 
+  // PUT /api/tags/:id - Update tag
+  fastify.put<{ Params: TagParams; Body: CreateTagBody }>('/:id', async (request, reply) => {
+    const { id } = request.params;
+    const { name } = request.body;
+
+    if (!name || name.trim().length === 0) {
+      return reply.status(400).send({ error: 'Name is required' });
+    }
+
+    try {
+      const tag = await tagsService.update(id, request.user.userId, { name: name.trim() });
+      return reply.send(tag);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update tag';
+      if (message === 'Tag not found') {
+        return reply.status(404).send({ error: message });
+      }
+      if (message === 'Tag already exists') {
+        return reply.status(409).send({ error: message });
+      }
+      return reply.status(500).send({ error: message });
+    }
+  });
+
   // DELETE /api/tags/:id - Delete tag
   fastify.delete<{ Params: TagParams }>('/:id', async (request, reply) => {
     const { id } = request.params;
@@ -48,8 +72,15 @@ export async function tagsRoutes(fastify: FastifyInstance) {
     try {
       await tagsService.delete(id, request.user.userId);
       return reply.status(204).send();
-    } catch {
-      return reply.status(404).send({ error: 'Tag not found' });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to delete tag';
+      if (message === 'Tag not found') {
+        return reply.status(404).send({ error: message });
+      }
+      if (message.startsWith('Cannot delete tag')) {
+        return reply.status(409).send({ error: message });
+      }
+      return reply.status(500).send({ error: message });
     }
   });
 }

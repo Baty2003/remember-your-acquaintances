@@ -34,7 +34,7 @@ export const tagsService = {
     return tag;
   },
 
-  async delete(id: string, userId: string) {
+  async update(id: string, userId: string, input: CreateTagInput) {
     // Verify ownership
     const existing = await prisma.tag.findFirst({
       where: { id, userId },
@@ -42,6 +42,42 @@ export const tagsService = {
 
     if (!existing) {
       throw new Error('Tag not found');
+    }
+
+    // Check if another tag with the same name exists
+    const duplicate = await prisma.tag.findFirst({
+      where: { userId, name: input.name, NOT: { id } },
+    });
+
+    if (duplicate) {
+      throw new Error('Tag already exists');
+    }
+
+    const tag = await prisma.tag.update({
+      where: { id },
+      data: { name: input.name },
+    });
+
+    return tag;
+  },
+
+  async delete(id: string, userId: string) {
+    // Verify ownership and check usage
+    const existing = await prisma.tag.findFirst({
+      where: { id, userId },
+      include: {
+        _count: {
+          select: { contacts: true },
+        },
+      },
+    });
+
+    if (!existing) {
+      throw new Error('Tag not found');
+    }
+
+    if (existing._count.contacts > 0) {
+      throw new Error(`Cannot delete tag: it is used by ${existing._count.contacts} contact(s)`);
     }
 
     await prisma.tag.delete({

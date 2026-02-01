@@ -13,4 +13,18 @@ export {
 
 export { statsApi, useGetStatsQuery } from './statsApi';
 
-export { tagsApi, useGetTagsQuery, useCreateTagMutation, useDeleteTagMutation } from './tagsApi';
+export {
+  tagsApi,
+  useGetTagsQuery,
+  useCreateTagMutation,
+  useUpdateTagMutation,
+  useDeleteTagMutation,
+} from './tagsApi';
+
+export {
+  meetingPlacesApi,
+  useGetMeetingPlacesQuery,
+  useCreateMeetingPlaceMutation,
+  useUpdateMeetingPlaceMutation,
+  useDeleteMeetingPlaceMutation,
+} from './meetingPlacesApi';

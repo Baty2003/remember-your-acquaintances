@@ -1,0 +1,39 @@
+.container {
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.table {
+  background: #fff;
+  border-radius: 8px;
+}
+
+.editInput {
+  max-width: 300px;
+}
+
+.saveButton {
+  color: #52c41a;
+}
+
+.saveButton:hover {
+  color: #73d13d;
+}
+
+.cancelButton {
+  color: #8c8c8c;
+}
+
+.cancelButton:hover {
+  color: #595959;
+}

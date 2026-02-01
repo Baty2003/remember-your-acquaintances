@@ -109,9 +109,9 @@ export const ContactsListPage = () => {
                         {contact.occupation && (
                           <Text type="secondary">{contact.occupation}</Text>
                         )}
-                        {contact.whereMet && (
+                        {contact.meetingPlace && (
                           <Text type="secondary" className={styles.whereMet}>
-                            Met at: {contact.whereMet}
+                            Met at: {contact.meetingPlace.name}
                           </Text>
                         )}
                       </div>

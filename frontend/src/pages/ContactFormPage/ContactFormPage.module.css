@@ -33,7 +33,11 @@
 }
 
 .heightInput {
-  width: 100%;
+  flex: 1;
+}
+
+.heightTypeInput {
+  flex: 1;
 }
 
 .actions {
@@ -43,4 +47,14 @@
 
 .cancelButton {
   margin-right: 12px;
+}
+
+.metAtRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.datePicker {
+  flex: 1;
 }

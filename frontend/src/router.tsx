@@ -6,6 +6,8 @@ import {
   ContactsListPage,
   ContactFormPage,
   ContactDetailPage,
+  TagsPage,
+  MeetingPlacesPage,
 } from './pages';
 
 export const router = createBrowserRouter([
@@ -44,6 +46,14 @@ export const router = createBrowserRouter([
       {
         path: 'contacts/:id/edit',
         element: <ContactFormPage />,
+      },
+      {
+        path: 'tags',
+        element: <TagsPage />,
+      },
+      {
+        path: 'meeting-places',
+        element: <MeetingPlacesPage />,
       },
     ],
   },

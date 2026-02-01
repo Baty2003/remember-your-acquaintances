@@ -1,6 +1,12 @@
 import { Layout, Menu, Button, Typography } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { HomeOutlined, UserOutlined, TagOutlined, LogoutOutlined } from '@ant-design/icons';
+import {
+  HomeOutlined,
+  UserOutlined,
+  TagOutlined,
+  EnvironmentOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { logout } from '../../../store/authSlice';
 import { Logo } from '../../Logo';
@@ -35,6 +41,11 @@ export const AppLayout = () => {
       key: '/tags',
       icon: <TagOutlined />,
       label: 'Tags',
+    },
+    {
+      key: '/meeting-places',
+      icon: <EnvironmentOutlined />,
+      label: 'Meeting Places',
     },
   ];
 

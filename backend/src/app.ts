@@ -6,6 +6,7 @@ import { authRoutes } from './routes/auth.routes.js';
 import { contactsRoutes } from './routes/contacts.routes.js';
 import { statsRoutes } from './routes/stats.routes.js';
 import { tagsRoutes } from './routes/tags.routes.js';
+import { meetingPlacesRoutes } from './routes/meetingPlaces.routes.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -54,6 +55,9 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   // Register tags routes under /api/tags
   await app.register(tagsRoutes, { prefix: '/api/tags' });
+
+  // Register meeting places routes under /api/meeting-places
+  await app.register(meetingPlacesRoutes, { prefix: '/api/meeting-places' });
 
   return app;
 }

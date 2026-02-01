@@ -1,0 +1,23 @@
+.section {
+  padding: 8px 0;
+}
+
+.sectionTitle {
+  margin: 0 0 16px 0 !important;
+  font-size: 16px !important;
+  color: #333 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.factLabel {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.factValue {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}

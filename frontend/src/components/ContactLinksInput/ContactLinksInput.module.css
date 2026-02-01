@@ -1,0 +1,57 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.typeSelect {
+  flex: 0 0 150px;
+  min-width: 150px;
+}
+
+.typeSelect :global(.ant-select-selection-item) {
+  display: flex;
+  align-items: center;
+}
+
+.selectIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.labelInput {
+  flex: 0 0 100px;
+  min-width: 100px;
+}
+
+.valueInput {
+  flex: 1 1 auto;
+  min-width: 200px;
+}
+
+.prefixIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.deleteButton {
+  flex: 0 0 auto;
+}
+
+.addButton {
+  width: 100%;
+}

@@ -1,0 +1,1 @@
+export { KeyFactsBlock } from './KeyFactsBlock';
