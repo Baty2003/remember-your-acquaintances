@@ -1,0 +1,34 @@
+{
+  "name": "remember-your-acquaintances",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal Contacts Management Application",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "build:backend": "npm run build -w backend",
+    "build:frontend": "npm run build -w frontend",
+    "lint:backend": "npm run lint -w backend",
+    "lint:frontend": "npm run lint -w frontend",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "format": "npm run format -w backend && npm run format -w frontend",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "backend/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  }
+}

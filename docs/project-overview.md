@@ -29,11 +29,15 @@ The system should help recall people, interactions, and important details over t
 ---
 
 ## Repository Structure
-The project is developed as a **monorepository** with the following structure:
+The project is developed as a **monorepository** using npm workspaces:
 
-/backend – backend API (Node.js + Express)
-/frontend – web frontend
-/docs – project documentation
+```
+/
+├── backend/     – Backend API (Fastify + TypeScript)
+├── frontend/    – Web frontend (to be defined)
+├── docs/        – Project documentation
+└── package.json – Root workspace config
+```
 
 ---
 
@@ -48,10 +52,21 @@ The project is developed as a **monorepository** with the following structure:
 
 ---
 
-## Technology Stack (Initial)
-- Backend: Node.js + Express
-- Frontend: Web application (to be defined)
-- Documentation: Markdown files stored in `/docs`
+## Technology Stack
+
+### Backend
+- **Runtime**: Node.js 20+
+- **Framework**: Fastify
+- **Language**: TypeScript
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **ORM**: Prisma
+- **Authentication**: JWT + bcrypt
+
+### Frontend
+- To be defined
+
+### Documentation
+- Markdown files stored in `/docs`
 
 ---
 
