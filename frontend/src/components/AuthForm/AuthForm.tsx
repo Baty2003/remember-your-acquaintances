@@ -74,11 +74,10 @@ export const AuthForm = () => {
 
       {error && (
         <Alert
-          message={error}
+          description={error}
           type="error"
           showIcon
-          closable
-          onClose={() => dispatch(clearError())}
+          closable={{ onClose: () => dispatch(clearError()) }}
           className={styles.alert}
         />
       )}

@@ -1,0 +1,46 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.backButton {
+  margin-bottom: 16px;
+  padding-left: 0;
+}
+
+.card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.ageInput {
+  flex: 1;
+}
+
+.ageTypeInput {
+  flex: 1;
+}
+
+.heightInput {
+  width: 100%;
+}
+
+.actions {
+  margin-bottom: 0;
+  margin-top: 24px;
+}
+
+.cancelButton {
+  margin-right: 12px;
+}

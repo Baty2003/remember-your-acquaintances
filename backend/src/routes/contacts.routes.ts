@@ -1,9 +1,5 @@
-import { FastifyInstance, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { contactsService } from '../services/contacts.service.js';
-
-interface AuthenticatedRequest {
-  user: { id: string; username: string };
-}
 
 interface ContactParams {
   id: string;
@@ -32,15 +28,14 @@ interface ContactQuery {
 
 export async function contactsRoutes(fastify: FastifyInstance) {
   // All routes require authentication
-  fastify.addHook('onRequest', async (request: FastifyRequest) => {
-    await (request as FastifyRequest & { jwtVerify: () => Promise<void> }).jwtVerify();
+  fastify.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
+    await fastify.authenticate(request, reply);
   });
 
   // GET /api/contacts - Get all contacts
   fastify.get<{
     Querystring: ContactQuery;
   }>('/', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { search, tagIds, sortBy, sortOrder } = request.query;
 
     const filters = {
@@ -50,7 +45,7 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       sortOrder,
     };
 
-    const result = await contactsService.getAll(user.id, filters);
+    const result = await contactsService.getAll(request.user.userId, filters);
     return reply.send(result);
   });
 
@@ -58,11 +53,10 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   fastify.get<{
     Params: ContactParams;
   }>('/:id', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { id } = request.params;
 
     try {
-      const contact = await contactsService.getById(id, user.id);
+      const contact = await contactsService.getById(id, request.user.userId);
       return reply.send(contact);
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
@@ -73,14 +67,16 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   fastify.post<{
     Body: CreateContactBody;
   }>('/', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { name, ...rest } = request.body;
 
     if (!name || name.trim().length === 0) {
       return reply.status(400).send({ error: 'Name is required' });
     }
 
-    const contact = await contactsService.create(user.id, { name, ...rest });
+    const contact = await contactsService.create(request.user.userId, {
+      name,
+      ...rest,
+    });
     return reply.status(201).send(contact);
   });
 
@@ -89,11 +85,10 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     Params: ContactParams;
     Body: UpdateContactBody;
   }>('/:id', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { id } = request.params;
 
     try {
-      const contact = await contactsService.update(id, user.id, request.body);
+      const contact = await contactsService.update(id, request.user.userId, request.body);
       return reply.send(contact);
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
@@ -104,11 +99,10 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   fastify.delete<{
     Params: ContactParams;
   }>('/:id', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { id } = request.params;
 
     try {
-      await contactsService.delete(id, user.id);
+      await contactsService.delete(id, request.user.userId);
       return reply.status(204).send();
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
@@ -120,7 +114,6 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     Params: ContactParams;
     Body: { photoUrl: string };
   }>('/:id/photo', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { id } = request.params;
     const { photoUrl } = request.body;
 
@@ -129,7 +122,7 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     }
 
     try {
-      const contact = await contactsService.updatePhoto(id, user.id, photoUrl);
+      const contact = await contactsService.updatePhoto(id, request.user.userId, photoUrl);
       return reply.send(contact);
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
@@ -140,11 +133,10 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   fastify.delete<{
     Params: ContactParams;
   }>('/:id/photo', async (request, reply) => {
-    const { user } = request as unknown as AuthenticatedRequest;
     const { id } = request.params;
 
     try {
-      const contact = await contactsService.deletePhoto(id, user.id);
+      const contact = await contactsService.deletePhoto(id, request.user.userId);
       return reply.send(contact);
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });

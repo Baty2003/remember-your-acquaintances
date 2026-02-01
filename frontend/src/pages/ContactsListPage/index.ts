@@ -1,0 +1,1 @@
+export { ContactsListPage } from './ContactsListPage';
