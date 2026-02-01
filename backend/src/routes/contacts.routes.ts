@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { contactsService } from '../services/contacts.service.js';
+import { contactsService, ContactImportItem } from '../services/contacts.service.js';
 
 interface ContactParams {
   id: string;
@@ -107,6 +107,28 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
     }
+  });
+
+  // POST /api/contacts/import - Import contacts from JSON
+  fastify.post<{
+    Body: { contacts: ContactImportItem[] };
+  }>('/import', async (request, reply) => {
+    const { contacts } = request.body;
+
+    if (!contacts || !Array.isArray(contacts)) {
+      return reply.status(400).send({ error: 'Contacts array is required' });
+    }
+
+    if (contacts.length === 0) {
+      return reply.status(400).send({ error: 'Contacts array cannot be empty' });
+    }
+
+    if (contacts.length > 100) {
+      return reply.status(400).send({ error: 'Cannot import more than 100 contacts at once' });
+    }
+
+    const result = await contactsService.importMany(request.user.userId, contacts);
+    return reply.send(result);
   });
 
   // POST /api/contacts/:id/photo - Upload photo

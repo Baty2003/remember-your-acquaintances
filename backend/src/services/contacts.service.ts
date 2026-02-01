@@ -33,6 +33,30 @@ export interface ContactFilters {
   sortOrder?: 'asc' | 'desc';
 }
 
+export interface ContactImportItem {
+  name: string;
+  gender?: string;
+  age?: number;
+  ageType?: string;
+  height?: number;
+  heightType?: string;
+  occupation?: string;
+  occupationDetails?: string;
+  whereMet?: string;
+  howMet?: string;
+  details?: string;
+  metAt?: string;
+  tags?: string[]; // Tag names
+  meetingPlace?: string; // Meeting place name
+  links?: ContactLinkInput[];
+}
+
+export interface ImportResult {
+  success: number;
+  failed: number;
+  errors: string[];
+}
+
 export const contactsService = {
   async getAll(userId: string, filters?: ContactFilters) {
     const where: Record<string, unknown> = { userId };
@@ -243,5 +267,118 @@ export const contactsService = {
     });
 
     return contact;
+  },
+
+  async importMany(userId: string, contacts: ContactImportItem[]): Promise<ImportResult> {
+    const result: ImportResult = {
+      success: 0,
+      failed: 0,
+      errors: [],
+    };
+
+    // Pre-fetch existing tags and meeting places for this user (optimization)
+    const existingTags = await prisma.tag.findMany({
+      where: { userId },
+      select: { id: true, name: true },
+    });
+    const tagMap = new Map(existingTags.map((t) => [t.name.toLowerCase(), t.id]));
+
+    const existingPlaces = await prisma.meetingPlace.findMany({
+      where: { userId },
+      select: { id: true, name: true },
+    });
+    const placeMap = new Map(existingPlaces.map((p) => [p.name.toLowerCase(), p.id]));
+
+    // Helper: find or create tag
+    const resolveTag = async (tagName: string): Promise<string> => {
+      const key = tagName.toLowerCase();
+      if (tagMap.has(key)) {
+        return tagMap.get(key)!;
+      }
+      const created = await prisma.tag.create({
+        data: { userId, name: tagName },
+      });
+      tagMap.set(key, created.id);
+      return created.id;
+    };
+
+    // Helper: find or create meeting place
+    const resolveMeetingPlace = async (placeName: string): Promise<string> => {
+      const key = placeName.toLowerCase();
+      if (placeMap.has(key)) {
+        return placeMap.get(key)!;
+      }
+      const created = await prisma.meetingPlace.create({
+        data: { userId, name: placeName },
+      });
+      placeMap.set(key, created.id);
+      return created.id;
+    };
+
+    // Process each contact
+    for (const item of contacts) {
+      try {
+        // Validate required field
+        if (!item.name || typeof item.name !== 'string' || item.name.trim() === '') {
+          throw new Error('Name is required');
+        }
+
+        // Resolve tags (names → IDs)
+        const tagIds: string[] = [];
+        if (item.tags && item.tags.length > 0) {
+          for (const tagName of item.tags) {
+            if (tagName && tagName.trim()) {
+              const tagId = await resolveTag(tagName.trim());
+              tagIds.push(tagId);
+            }
+          }
+        }
+
+        // Resolve meeting place (name → ID)
+        let meetingPlaceId: string | null = null;
+        if (item.meetingPlace && item.meetingPlace.trim()) {
+          meetingPlaceId = await resolveMeetingPlace(item.meetingPlace.trim());
+        }
+
+        // Create the contact
+        await prisma.contact.create({
+          data: {
+            userId,
+            name: item.name.trim(),
+            gender: item.gender || null,
+            age: item.age || null,
+            ageType: item.ageType || null,
+            height: item.height || null,
+            heightType: item.heightType || null,
+            occupation: item.occupation || null,
+            occupationDetails: item.occupationDetails || null,
+            whereMet: item.whereMet || null,
+            howMet: item.howMet || null,
+            details: item.details || null,
+            metAt: item.metAt ? new Date(item.metAt) : new Date(),
+            meetingPlaceId,
+            tags: tagIds.length > 0 ? { connect: tagIds.map((id) => ({ id })) } : undefined,
+            links:
+              item.links && item.links.length > 0
+                ? {
+                    create: item.links.map((link) => ({
+                      type: link.type,
+                      label: link.label || null,
+                      value: link.value,
+                    })),
+                  }
+                : undefined,
+          },
+        });
+
+        result.success++;
+      } catch (error) {
+        result.failed++;
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        result.errors.push(`Failed to import "${item.name || 'unnamed'}": ${errorMessage}`);
+      }
+    }
+
+    return result;
   },
 };

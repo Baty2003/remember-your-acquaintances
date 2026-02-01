@@ -1,0 +1,23 @@
+.container {
+  max-width: 300px;
+}
+
+.label {
+  font-size: 12px;
+}
+
+.value {
+  font-size: 13px;
+}
+
+.section {
+  margin-top: 8px;
+}
+
+.tagsContainer {
+  margin-top: 4px;
+}
+
+.tag {
+  margin-bottom: 4px;
+}

@@ -22,6 +22,8 @@ export type {
   ContactsResponse,
   ContactFilters,
   ContactsState,
+  ContactImportItem,
+  ImportResult,
 } from './contact';
 
 export type { UserStats } from './stats';

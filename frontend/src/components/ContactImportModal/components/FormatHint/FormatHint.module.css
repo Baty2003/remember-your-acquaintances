@@ -1,0 +1,20 @@
+.container {
+  margin-top: 16px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.code {
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+  font-size: 11px !important;
+  white-space: pre-wrap !important;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.hint {
+  font-size: 12px;
+  display: block;
+}

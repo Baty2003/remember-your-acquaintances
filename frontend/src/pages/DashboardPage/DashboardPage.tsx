@@ -1,19 +1,23 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Card, Row, Col, Statistic, Spin, Button } from 'antd';
+import { Typography, Card, Row, Col, Statistic, Spin, Button, Space } from 'antd';
 import {
   UserOutlined,
   TagOutlined,
   FileTextOutlined,
   PlusOutlined,
   ClockCircleOutlined,
+  ImportOutlined,
 } from '@ant-design/icons';
 import { useGetStatsQuery } from '../../store';
+import { ContactImportModal } from '../../components';
 import styles from './DashboardPage.module.css';
 
 const { Title } = Typography;
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const { data: stats, isLoading } = useGetStatsQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
@@ -30,14 +34,24 @@ export const DashboardPage = () => {
     <div>
       <div className={styles.header}>
         <Title level={2}>Dashboard</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => navigate('/contacts/new')}
-        >
-          Add Contact
-        </Button>
+        <Space>
+          <Button icon={<ImportOutlined />} onClick={() => setIsImportModalOpen(true)}>
+            Import
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/contacts/new')}
+          >
+            Add Contact
+          </Button>
+        </Space>
       </div>
+
+      <ContactImportModal
+        open={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
 
       <Row gutter={16}>
         <Col xs={12} sm={6}>

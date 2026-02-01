@@ -9,18 +9,50 @@ import {
   Spin,
   Avatar,
   Typography,
+  Space,
 } from 'antd';
-import { PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, UserOutlined, ImportOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { useGetContactsQuery } from '../../store';
+import { ContactImportModal } from '../../components';
 import type { Contact } from '../../types';
 import styles from './ContactsListPage.module.css';
 
 const { Text } = Typography;
 const { Search } = Input;
 
+const getBasicInfo = (contact: Contact): string => {
+  const parts: string[] = [];
+  
+  if (contact.age) {
+    const ageStr = contact.ageType === 'approximate' ? `~${contact.age}` : `${contact.age}`;
+    parts.push(ageStr);
+  }
+  
+  if (contact.height) {
+    const heightStr = contact.heightType === 'approximate' ? `~${contact.height} см` : `${contact.height} см`;
+    parts.push(heightStr);
+  }
+  
+  return parts.join(' • ');
+};
+
+const getDescriptionText = (contact: Contact): string | null => {
+  if (contact.occupation) {
+    return contact.occupation;
+  }
+  if (contact.howMet) {
+    return contact.howMet.length > 100 ? `${contact.howMet.slice(0, 100)}...` : contact.howMet;
+  }
+  if (contact.details) {
+    return contact.details.length > 100 ? `${contact.details.slice(0, 100)}...` : contact.details;
+  }
+  return null;
+};
+
 export const ContactsListPage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const { data, isLoading } = useGetContactsQuery(
     searchQuery ? { search: searchQuery } : undefined,
@@ -46,10 +78,20 @@ export const ContactsListPage = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Contacts</h1>
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddContact}>
-          Add Contact
-        </Button>
+        <Space>
+          <Button icon={<ImportOutlined />} onClick={() => setIsImportModalOpen(true)}>
+            Import
+          </Button>
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleAddContact}>
+            Add Contact
+          </Button>
+        </Space>
       </div>
+
+      <ContactImportModal
+        open={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
 
       <div className={styles.searchBar}>
         <Search
@@ -103,15 +145,35 @@ export const ContactsListPage = () => {
                         className={styles.avatar}
                       />
                     }
-                    title={contact.name}
+                    title={
+                      <span className={styles.nameRow}>
+                        <span>{contact.name}</span>
+                        {contact.gender && (
+                          <span className={styles.genderIcon}>
+                            {contact.gender === 'male' ? (
+                              <ManOutlined style={{ color: '#1890ff' }} />
+                            ) : (
+                              <WomanOutlined style={{ color: '#eb2f96' }} />
+                            )}
+                          </span>
+                        )}
+                        {getBasicInfo(contact) && (
+                          <Text type="secondary" className={styles.basicInfo}>
+                            {getBasicInfo(contact)}
+                          </Text>
+                        )}
+                      </span>
+                    }
                     description={
                       <div className={styles.contactInfo}>
-                        {contact.occupation && (
-                          <Text type="secondary">{contact.occupation}</Text>
+                        {getDescriptionText(contact) && (
+                          <Text type="secondary" className={styles.descriptionText}>
+                            {getDescriptionText(contact)}
+                          </Text>
                         )}
                         {contact.meetingPlace && (
                           <Text type="secondary" className={styles.whereMet}>
-                            Met at: {contact.meetingPlace.name}
+                            📍 {contact.meetingPlace.name}
                           </Text>
                         )}
                       </div>

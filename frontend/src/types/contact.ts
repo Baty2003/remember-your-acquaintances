@@ -99,3 +99,29 @@ export interface ContactsState {
   error: string | null;
   total: number;
 }
+
+// Import types
+export interface ContactImportItem {
+  name: string;
+  gender?: Gender;
+  age?: number;
+  ageType?: AgeType;
+  height?: number;
+  heightType?: HeightType;
+  occupation?: string;
+  occupationDetails?: string;
+  whereMet?: string;
+  howMet?: string;
+  details?: string;
+  metAt?: string;
+  tags?: string[]; // Tag names - will be matched or created
+  meetingPlace?: string; // Meeting place name - will be matched or created
+  links?: Omit<ContactLinkInput, 'type'> & { type: string }[];
+}
+
+export interface ImportResult {
+  success: number;
+  failed: number;
+  errors: string[];
+  created: Contact[];
+}

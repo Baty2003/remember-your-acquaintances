@@ -27,6 +27,7 @@ export {
   useCreateContactMutation,
   useUpdateContactMutation,
   useDeleteContactMutation,
+  useImportContactsMutation,
   useGetStatsQuery,
   useGetTagsQuery,
   useCreateTagMutation,

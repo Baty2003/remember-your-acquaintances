@@ -5,6 +5,8 @@ import type {
   CreateContactRequest,
   UpdateContactRequest,
   ContactFilters,
+  ContactImportItem,
+  ImportResult,
 } from '../../types';
 
 export const contactsApi = baseApi.injectEndpoints({
@@ -75,6 +77,20 @@ export const contactsApi = baseApi.injectEndpoints({
         'Stats',
       ],
     }),
+
+    importContacts: builder.mutation<ImportResult, ContactImportItem[]>({
+      query: (contacts) => ({
+        url: '/api/contacts/import',
+        method: 'POST',
+        body: { contacts },
+      }),
+      invalidatesTags: [
+        { type: 'Contacts', id: 'LIST' },
+        'Stats',
+        'Tags',
+        'MeetingPlaces',
+      ],
+    }),
   }),
 });
 
@@ -84,4 +100,5 @@ export const {
   useCreateContactMutation,
   useUpdateContactMutation,
   useDeleteContactMutation,
+  useImportContactsMutation,
 } = contactsApi;

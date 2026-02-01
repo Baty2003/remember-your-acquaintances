@@ -51,10 +51,33 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+.nameRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.genderIcon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.basicInfo {
+  font-size: 13px;
+  font-weight: normal;
+}
+
 .contactInfo {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.descriptionText {
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .whereMet {
