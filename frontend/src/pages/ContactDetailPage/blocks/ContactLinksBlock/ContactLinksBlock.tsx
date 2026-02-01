@@ -1,11 +1,7 @@
-import { Typography, Divider } from 'antd';
 import { PhoneOutlined, InstagramOutlined, LinkOutlined } from '@ant-design/icons';
 import { FaTelegram, FaVk } from 'react-icons/fa';
 import type { ContactLink, ContactLinkType } from '../../../../types';
-import sharedStyles from '../shared.module.css';
 import styles from './ContactLinksBlock.module.css';
-
-const { Title } = Typography;
 
 const LINK_TYPE_CONFIG: Record<ContactLinkType, {
   label: string;
@@ -49,38 +45,30 @@ interface ContactLinksBlockProps {
 }
 
 export const ContactLinksBlock = ({ links }: ContactLinksBlockProps) => {
-  if (!links || links.length === 0) return null;
-
   return (
-    <>
-      <Divider />
-      <div className={sharedStyles.section}>
-        <Title level={5} className={sharedStyles.sectionTitle}>Contact Links</Title>
-        <div className={styles.linksGrid}>
-          {links.map((link) => {
-            const config = LINK_TYPE_CONFIG[link.type] || LINK_TYPE_CONFIG.other;
-            const url = config.getUrl?.(link.value);
-            const displayLabel = link.type === 'other' && link.label ? link.label : config.label;
-            
-            return (
-              <a
-                key={link.id}
-                href={url}
-                target={link.type !== 'phone' ? '_blank' : undefined}
-                rel="noopener noreferrer"
-                className={styles.linkItem}
-                style={{ '--link-color': config.color } as React.CSSProperties}
-              >
-                <span className={styles.linkIcon}>{config.icon}</span>
-                <span className={styles.linkContent}>
-                  <span className={styles.linkLabel}>{displayLabel}</span>
-                  <span className={styles.linkValue}>{link.value}</span>
-                </span>
-              </a>
-            );
-          })}
-        </div>
-      </div>
-    </>
+    <div className={styles.linksGrid}>
+      {links?.map((link) => {
+        const config = LINK_TYPE_CONFIG[link.type] || LINK_TYPE_CONFIG.other;
+        const url = config.getUrl?.(link.value);
+        const displayLabel = link.type === 'other' && link.label ? link.label : config.label;
+        
+        return (
+          <a
+            key={link.id}
+            href={url}
+            target={link.type !== 'phone' ? '_blank' : undefined}
+            rel="noopener noreferrer"
+            className={styles.linkItem}
+            style={{ '--link-color': config.color } as React.CSSProperties}
+          >
+            <span className={styles.linkIcon}>{config.icon}</span>
+            <span className={styles.linkContent}>
+              <span className={styles.linkLabel}>{displayLabel}</span>
+              <span className={styles.linkValue}>{link.value}</span>
+            </span>
+          </a>
+        );
+      })}
+    </div>
   );
 };

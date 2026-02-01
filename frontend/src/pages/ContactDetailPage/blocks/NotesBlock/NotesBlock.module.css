@@ -1,5 +1,11 @@
+.notesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .noteCard {
-  margin-bottom: 12px;
+  margin: 0;
 }
 
 .noteDate {

@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, Button, Spin, Empty } from 'antd';
+import { Card, Button, Spin, Empty, Collapse } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useGetContactQuery, useDeleteContactMutation } from '../../store';
 import { message } from 'antd';
@@ -24,6 +25,90 @@ export const ContactDetailPage = () => {
   });
 
   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+
+  const collapseItems = useMemo(() => {
+    if (!currentContact) return [];
+    
+    const {
+      occupation,
+      occupationDetails,
+      meetingPlace,
+      howMet,
+      details,
+      metAt,
+      tags,
+      links,
+      notes,
+    } = currentContact;
+
+    const items = [];
+
+    if (occupation || occupationDetails) {
+      items.push({
+        key: 'keyFacts',
+        label: 'Key Facts',
+        children: (
+          <KeyFactsBlock
+            occupation={occupation}
+            occupationDetails={occupationDetails}
+          />
+        ),
+      });
+    }
+
+    if (meetingPlace || metAt || howMet) {
+      items.push({
+        key: 'meeting',
+        label: 'Meeting',
+        children: (
+          <MeetingBlock
+            meetingPlace={meetingPlace}
+            metAt={metAt}
+            howMet={howMet}
+          />
+        ),
+      });
+    }
+
+    if (details) {
+      items.push({
+        key: 'description',
+        label: 'Description',
+        children: <DescriptionBlock details={details} />,
+      });
+    }
+
+    if (links && links.length > 0) {
+      items.push({
+        key: 'links',
+        label: 'Contact Links',
+        children: <ContactLinksBlock links={links} />,
+      });
+    }
+
+    if (tags && tags.length > 0) {
+      items.push({
+        key: 'tags',
+        label: 'Tags',
+        children: <TagsBlock tags={tags} />,
+      });
+    }
+
+    if (notes && notes.length > 0) {
+      items.push({
+        key: 'notes',
+        label: 'Notes',
+        children: <NotesBlock notes={notes} />,
+      });
+    }
+
+    return items;
+  }, [currentContact]);
+
+  const defaultActiveKeys = useMemo(
+    () => collapseItems.map((item) => item.key),
+    [collapseItems]
+  );
 
   const handleBack = () => {
     navigate('/contacts');
@@ -75,15 +160,6 @@ export const ContactDetailPage = () => {
     ageType,
     height,
     heightType,
-    occupation,
-    occupationDetails,
-    meetingPlace,
-    howMet,
-    details,
-    metAt,
-    tags,
-    links,
-    notes,
     createdAt,
     updatedAt,
   } = currentContact;
@@ -112,24 +188,14 @@ export const ContactDetailPage = () => {
           isDeleting={isDeleting}
         />
 
-        <KeyFactsBlock
-          occupation={occupation}
-          occupationDetails={occupationDetails}
-        />
-
-        <MeetingBlock
-          meetingPlace={meetingPlace}
-          metAt={metAt}
-          howMet={howMet}
-        />
-
-        <DescriptionBlock details={details} />
-
-        <ContactLinksBlock links={links} />
-
-        <TagsBlock tags={tags} />
-
-        <NotesBlock notes={notes} />
+        {collapseItems.length > 0 && (
+          <Collapse
+            defaultActiveKey={defaultActiveKeys}
+            ghost
+            className={styles.collapse}
+            items={collapseItems}
+          />
+        )}
 
         <MetadataBlock createdAt={createdAt} updatedAt={updatedAt} />
       </Card>
