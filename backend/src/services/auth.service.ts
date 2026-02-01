@@ -39,7 +39,7 @@ export class AuthService {
    */
   generateToken(payload: JwtPayload): string {
     return jwt.sign(payload, config.jwtSecret, {
-      expiresIn: config.jwtExpiresIn,
+      expiresIn: config.jwtExpiresIn as jwt.SignOptions['expiresIn'],
     });
   }
 

@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import { config } from './config/env.js';
 import authPlugin from './plugins/auth.plugin.js';
 import { authRoutes } from './routes/auth.routes.js';
+import { contactsRoutes } from './routes/contacts.routes.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -42,6 +43,9 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   // Register auth routes under /api/auth
   await app.register(authRoutes, { prefix: '/api/auth' });
+
+  // Register contacts routes under /api/contacts
+  await app.register(contactsRoutes, { prefix: '/api/contacts' });
 
   return app;
 }

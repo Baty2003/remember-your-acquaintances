@@ -1,0 +1,162 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rules – Backend & Frontend Development
+
+## General Principles
+- Follow existing project structure strictly
+- Do not invent files, folders, or abstractions without explicit instruction
+- Prefer simple and explicit solutions over complex or “clever” ones
+- Do not refactor unrelated code unless explicitly requested
+- Keep changes minimal and focused on the task
+
+---
+
+## Documentation First
+- Always rely on documentation from `/docs`
+- If something is unclear or missing in docs, ASK before implementing
+- Do not guess product behavior or data fields
+- Treat `/docs` as the single source of truth
+
+---
+
+## Backend Rules (Node.js + Express)
+
+### Architecture
+- Use clear separation:
+  - routes
+  - controllers
+  - services
+  - models
+- Do not mix business logic inside route handlers
+- Keep controllers thin, services contain logic
+
+### API Design
+- Use REST conventions
+- Use JSON only
+- Use meaningful HTTP status codes
+- Keep endpoint naming consistent
+
+Example:
+GET /contacts
+POST /contacts
+GET /contacts/:id
+PUT /contacts/:id
+DELETE /contacts/:id
+
+
+
+### Validation & Errors
+- Validate all input data
+- Never trust frontend input
+- Return clear error messages
+- Do not expose internal errors or stack traces
+
+### Authentication
+- Authentication is username + password
+- Assume all endpoints are protected unless stated otherwise
+- Always check user ownership of data
+
+### Data Model
+- Follow entity definitions from `/docs/main-entities.md`
+- Do not add new fields unless explicitly requested
+- Keep models flexible for future extension
+
+---
+
+## Frontend Rules (Web App)
+
+### Architecture
+- Use component-based structure
+- Keep components small and reusable
+- Separate:
+  - UI components
+  - business logic
+  - API calls
+
+### State & Data
+- Fetch data from backend API only
+- Do not hardcode backend data
+- Perform sorting, grouping, and simple filtering on frontend
+- Use backend filtering only for large datasets (e.g. date range)
+
+### Forms
+- All forms must:
+  - show validation errors
+  - handle loading states
+  - handle error states gracefully
+
+### UI & UX
+- Use Ant Design components consistently
+- Do not mix UI libraries
+- Keep UI minimal and functional
+- Notes must be embedded sections, NOT modals
+
+---
+
+## Notes & Contacts Behavior
+- Notes are always part of the Contact Details page
+- Notes are unlimited
+- Notes must not open in modal dialogs
+- Contacts must support tags from backend-provided list
+
+---
+
+## Code Quality Rules
+- Use clear naming (no abbreviations)
+- Avoid magic numbers and strings
+- Prefer explicit types
+- Write readable code over short code
+- Add comments only when logic is non-obvious
+
+---
+
+## AI Behavior Rules
+- If unsure — ASK
+- If documentation is missing — STOP and ASK
+- Do not assume future features
+- Do not over-engineer
+- Do not optimize prematurely
+
+---
+
+## Output Rules
+- When generating code:
+  - show only relevant files
+  - explain briefly what was changed
+- When generating suggestions:
+  - separate assumptions from facts
+- Do not repeat documentation content unless asked
+
+---
+
+## Goal
+The goal is to build:
+- a clean
+- maintainable
+- extensible
+personal application without unnecessary complexity.
+
+## Styling Rules (Very Important)
+
+- DO NOT use inline styles under any circumstances
+- DO NOT use `style={{ ... }}` in React components
+- All styles must be applied using:
+  - Ant Design component props
+  - CSS / SCSS files
+  - CSS Modules
+  - styled-components (only if already used in project)
+- Styling logic must be reusable and consistent
+- Visual spacing, colors, and typography must not be hardcoded inline
+
+If styling is unclear or missing:
+- ASK before adding styles
+- Prefer minimal styling over custom design
+
+### UI & Styling
+- Inline styles are strictly forbidden
+- Do not use `style` attribute in JSX
+- Do not add one-off visual fixes
+- Use Ant Design layout components (`Row`, `Col`, `Space`, `Layout`) for spacing
+- Keep styling consistent across screens

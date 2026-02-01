@@ -19,10 +19,8 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "backend/**/*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "backend/src/**/*.ts": "npm run lint --workspace=backend -- --fix",
+    "frontend/src/**/*.{ts,tsx}": "npm run lint --workspace=frontend -- --fix"
   },
   "keywords": [],
   "author": "",

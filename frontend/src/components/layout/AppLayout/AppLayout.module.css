@@ -1,0 +1,39 @@
+.layout {
+  min-height: 100vh;
+}
+
+.siderHeader {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.siderTitle {
+  margin: 0;
+}
+
+.menu {
+  border-right: 0;
+}
+
+.header {
+  background: #fff;
+  padding: 0 24px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.userInfo {
+  margin-right: 16px;
+}
+
+.content {
+  margin: 24px;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+}

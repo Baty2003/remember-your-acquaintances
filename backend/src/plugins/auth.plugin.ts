@@ -13,8 +13,8 @@ declare module 'fastify' {
 }
 
 async function authPlugin(app: FastifyInstance) {
-  // Decorate request with user property
-  app.decorateRequest('user', null);
+  // Decorate request with user property (use undefined cast to satisfy TypeScript)
+  app.decorateRequest('user', undefined as unknown as JwtPayload);
 
   // Add authenticate method to fastify instance
   app.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {

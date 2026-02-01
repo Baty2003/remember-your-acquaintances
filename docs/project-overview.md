@@ -63,10 +63,45 @@ The project is developed as a **monorepository** using npm workspaces:
 - **Authentication**: JWT + bcrypt
 
 ### Frontend
-- To be defined
+- **Framework**: React 18+
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **State Management**: Redux Toolkit
+- **UI Kit**: Ant Design
+- **Architecture**: Classic MVC-like (organized by type)
 
 ### Documentation
 - Markdown files stored in `/docs`
+
+---
+
+## Frontend Architecture
+
+The frontend follows a **Classic MVC-like architecture**, organizing code by file type rather than by feature.
+
+```
+frontend/src/
+├── components/       # Reusable UI components
+│   ├── auth/         # Auth-related components
+│   ├── common/       # Common components (Logo, etc.)
+│   └── layout/       # Layout components
+├── pages/            # Page components (route entry points)
+├── services/         # API calls and external services
+├── store/            # Redux store and slices
+├── hooks/            # Custom React hooks
+├── types/            # TypeScript type definitions
+├── assets/           # Static assets (images, fonts)
+├── router.tsx        # React Router configuration
+└── main.tsx          # App entry point
+```
+
+Folder purposes:
+- `components/` – Reusable UI components organized by domain
+- `pages/` – Page-level components corresponding to routes
+- `services/` – API client and service functions
+- `store/` – Redux Toolkit store and slices
+- `hooks/` – Custom React hooks
+- `types/` – TypeScript type definitions
 
 ---
 
