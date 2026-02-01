@@ -12,13 +12,12 @@ import {
   Space,
 } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
-  createContact,
-  updateContact,
-  fetchContactById,
-  clearCurrentContact,
+  useGetContactQuery,
+  useCreateContactMutation,
+  useUpdateContactMutation,
 } from '../../store';
+import { TagSelect } from '../../components';
 import type { CreateContactRequest } from '../../types';
 import styles from './ContactFormPage.module.css';
 
@@ -32,20 +31,18 @@ const AGE_TYPE_OPTIONS = [
 export const ContactFormPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [form] = Form.useForm();
 
-  const { currentContact, isLoading } = useAppSelector((state) => state.contacts);
   const isEditMode = Boolean(id);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchContactById(id));
-    }
-    return () => {
-      dispatch(clearCurrentContact());
-    };
-  }, [dispatch, id]);
+  const { data: currentContact, isLoading: isLoadingContact } = useGetContactQuery(id!, {
+    skip: !id,
+  });
+
+  const [createContact, { isLoading: isCreating }] = useCreateContactMutation();
+  const [updateContact, { isLoading: isUpdating }] = useUpdateContactMutation();
+
+  const isLoading = isCreating || isUpdating;
 
   useEffect(() => {
     if (currentContact && isEditMode) {
@@ -58,6 +55,7 @@ export const ContactFormPage = () => {
         occupationDetails: currentContact.occupationDetails,
         whereMet: currentContact.whereMet,
         howMet: currentContact.howMet,
+        tagIds: currentContact.tags?.map((t) => t.id) || [],
       });
     }
   }, [currentContact, isEditMode, form]);
@@ -65,10 +63,10 @@ export const ContactFormPage = () => {
   const onFinish = async (values: CreateContactRequest) => {
     try {
       if (isEditMode && id) {
-        await dispatch(updateContact({ id, data: values })).unwrap();
+        await updateContact({ id, data: values }).unwrap();
         message.success('Contact updated successfully');
       } else {
-        await dispatch(createContact(values)).unwrap();
+        await createContact(values).unwrap();
         message.success('Contact created successfully');
       }
       navigate('/contacts');
@@ -81,7 +79,7 @@ export const ContactFormPage = () => {
     navigate(-1);
   };
 
-  if (isEditMode && isLoading && !currentContact) {
+  if (isEditMode && isLoadingContact && !currentContact) {
     return (
       <div className={styles.loading}>
         <Spin size="large" />
@@ -149,6 +147,10 @@ export const ContactFormPage = () => {
 
           <Form.Item name="howMet" label="How Met">
             <TextArea rows={3} placeholder="Describe how you met" />
+          </Form.Item>
+
+          <Form.Item name="tagIds" label="Tags">
+            <TagSelect />
           </Form.Item>
 
           <Form.Item className={styles.actions}>

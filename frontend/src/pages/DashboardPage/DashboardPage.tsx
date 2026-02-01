@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Card, Row, Col, Statistic, Spin, Button } from 'antd';
 import {
@@ -8,31 +7,16 @@ import {
   PlusOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
-import { statsService } from '../../services';
-import type { UserStats } from '../../types';
+import { useGetStatsQuery } from '../../store';
 import styles from './DashboardPage.module.css';
 
 const { Title } = Typography;
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
-  const [stats, setStats] = useState<UserStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const data = await statsService.getStats();
-        setStats(data);
-      } catch (error) {
-        console.error('Failed to load stats:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadStats();
-  }, []);
+  const { data: stats, isLoading } = useGetStatsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isLoading) {
     return (

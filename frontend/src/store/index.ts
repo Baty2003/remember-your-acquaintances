@@ -1,27 +1,34 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
-import contactsReducer from './contactsSlice';
+import { baseApi } from './api';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    contacts: contactsReducer,
+    [baseApi.reducerPath]: baseApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 // Re-export auth actions
-export { login, register, logout, fetchCurrentUser, clearError, setUser } from './authSlice';
+export { logout, clearError, setUser, setCredentials, setError } from './authSlice';
 
-// Re-export contacts actions
+// Re-export RTK Query hooks
 export {
-  fetchContacts,
-  fetchContactById,
-  createContact,
-  updateContact,
-  deleteContact,
-  clearCurrentContact,
-  clearError as clearContactsError,
-} from './contactsSlice';
+  useLoginMutation,
+  useRegisterMutation,
+  useGetMeQuery,
+  useGetContactsQuery,
+  useGetContactQuery,
+  useCreateContactMutation,
+  useUpdateContactMutation,
+  useDeleteContactMutation,
+  useGetStatsQuery,
+  useGetTagsQuery,
+  useCreateTagMutation,
+  useDeleteTagMutation,
+} from './api';

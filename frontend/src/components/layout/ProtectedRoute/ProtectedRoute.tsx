@@ -1,23 +1,15 @@
 import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '../../../hooks';
-import { Spin } from 'antd';
-import styles from './ProtectedRoute.module.css';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  if (isLoading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <Spin size="large" />
-      </div>
-    );
-  }
-
+  // Don't show spinner - just check if authenticated (token exists)
+  // The token will be validated on API calls, and 401 will redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

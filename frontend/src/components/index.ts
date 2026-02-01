@@ -6,3 +6,6 @@ export { Logo } from './Logo';
 
 // Auth
 export { AuthForm } from './AuthForm';
+
+// Tags
+export { TagSelect } from './TagSelect';

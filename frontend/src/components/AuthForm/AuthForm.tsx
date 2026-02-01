@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Alert, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { login, register, clearError } from '../../store/authSlice';
+import { useLoginMutation, useRegisterMutation } from '../../store';
+import { setCredentials, clearError, setError } from '../../store/authSlice';
 import { Logo } from '../Logo';
 import {
   AUTH_FORM_CONSTANTS,
@@ -10,7 +12,6 @@ import {
   PASSWORD_RULES,
   CONFIRM_PASSWORD_RULES,
 } from '../../consts';
-import type { LoginCredentials, RegisterCredentials } from '../../types';
 import styles from './AuthForm.module.css';
 
 const { Title, Link } = Typography;
@@ -29,17 +30,30 @@ interface RegisterFormValues extends LoginFormValues {
 export const AuthForm = () => {
   const [mode, setMode] = useState<AuthMode>('login');
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const { error } = useAppSelector((state) => state.auth);
+
+  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
+  const [register, { isLoading: isRegistering }] = useRegisterMutation();
 
   const isLogin = mode === 'login';
+  const isLoading = isLoggingIn || isRegistering;
 
-  const onFinish = (values: LoginFormValues | RegisterFormValues) => {
-    if (isLogin) {
-      dispatch(login(values as LoginCredentials));
-    } else {
-      const { username, password } = values as RegisterFormValues;
-      dispatch(register({ username, password } as RegisterCredentials));
+  const onFinish = async (values: LoginFormValues | RegisterFormValues) => {
+    try {
+      let result;
+      if (isLogin) {
+        result = await login(values as LoginFormValues).unwrap();
+      } else {
+        const { username, password } = values as RegisterFormValues;
+        result = await register({ username, password }).unwrap();
+      }
+      dispatch(setCredentials({ user: result.user, token: result.token }));
+      navigate('/');
+    } catch (err) {
+      const error = err as { data?: { error?: string } };
+      dispatch(setError(error.data?.error || 'Authentication failed'));
     }
   };
 
@@ -48,6 +62,13 @@ export const AuthForm = () => {
     form.resetFields();
     setMode(isLogin ? 'register' : 'login');
   };
+
+  // Clear error on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const {
     TITLE,

@@ -5,6 +5,7 @@ import authPlugin from './plugins/auth.plugin.js';
 import { authRoutes } from './routes/auth.routes.js';
 import { contactsRoutes } from './routes/contacts.routes.js';
 import { statsRoutes } from './routes/stats.routes.js';
+import { tagsRoutes } from './routes/tags.routes.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -50,6 +51,9 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   // Register stats routes under /api/stats
   await app.register(statsRoutes, { prefix: '/api/stats' });
+
+  // Register tags routes under /api/tags
+  await app.register(tagsRoutes, { prefix: '/api/tags' });
 
   return app;
 }

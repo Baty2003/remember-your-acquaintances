@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Card,
@@ -11,8 +11,7 @@ import {
   Typography,
 } from 'antd';
 import { PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchContacts } from '../../store';
+import { useGetContactsQuery } from '../../store';
 import type { Contact } from '../../types';
 import styles from './ContactsListPage.module.css';
 
@@ -21,18 +20,18 @@ const { Search } = Input;
 
 export const ContactsListPage = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { contacts, isLoading, total } = useAppSelector((state) => state.contacts);
+  const { data, isLoading } = useGetContactsQuery(
+    searchQuery ? { search: searchQuery } : undefined,
+    { refetchOnMountOrArgChange: true }
+  );
 
-  useEffect(() => {
-    dispatch(fetchContacts(undefined));
-  }, [dispatch]);
+  const contacts = data?.contacts ?? [];
+  const total = data?.total ?? 0;
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
-    dispatch(fetchContacts({ search: value || undefined }));
   };
 
   const handleAddContact = () => {

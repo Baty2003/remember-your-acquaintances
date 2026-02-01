@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Card,
@@ -17,8 +16,7 @@ import {
   DeleteOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchContactById, deleteContact, clearCurrentContact } from '../../store';
+import { useGetContactQuery, useDeleteContactMutation } from '../../store';
 import styles from './ContactDetailPage.module.css';
 
 const { Title, Text } = Typography;
@@ -26,20 +24,12 @@ const { Title, Text } = Typography;
 export const ContactDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const { currentContact, isLoading, error } = useAppSelector(
-    (state) => state.contacts
-  );
+  const { data: currentContact, isLoading, error } = useGetContactQuery(id!, {
+    skip: !id,
+  });
 
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchContactById(id));
-    }
-    return () => {
-      dispatch(clearCurrentContact());
-    };
-  }, [dispatch, id]);
+  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
 
   const handleBack = () => {
     navigate('/contacts');
@@ -52,7 +42,7 @@ export const ContactDetailPage = () => {
   const handleDelete = async () => {
     if (!id) return;
     try {
-      await dispatch(deleteContact(id)).unwrap();
+      await deleteContact(id).unwrap();
       message.success('Contact deleted successfully');
       navigate('/contacts');
     } catch (err) {
@@ -79,7 +69,7 @@ export const ContactDetailPage = () => {
         >
           Back to Contacts
         </Button>
-        <Empty description={error || 'Contact not found'} />
+        <Empty description="Contact not found" />
       </div>
     );
   }
@@ -131,7 +121,7 @@ export const ContactDetailPage = () => {
               onConfirm={handleDelete}
               okText="Yes"
               cancelText="No"
-              okButtonProps={{ danger: true }}
+              okButtonProps={{ danger: true, loading: isDeleting }}
             >
               <Button danger icon={<DeleteOutlined />}>
                 Delete

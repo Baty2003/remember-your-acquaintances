@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { ProtectedRoute, AppLayout } from './components';
 import {
   LoginPage,
   DashboardPage,
@@ -6,7 +7,6 @@ import {
   ContactFormPage,
   ContactDetailPage,
 } from './pages';
-import { ProtectedRoute, AppLayout } from './components';
 
 export const router = createBrowserRouter([
   {
