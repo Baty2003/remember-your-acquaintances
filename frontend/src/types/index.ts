@@ -17,3 +17,5 @@ export type {
   ContactFilters,
   ContactsState,
 } from './contact';
+
+export type { UserStats } from './stats';
