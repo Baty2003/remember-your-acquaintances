@@ -5,8 +5,10 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8080",
+  baseUrl: API_BASE_URL,
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("token");
     if (token) {
