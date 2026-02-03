@@ -49,6 +49,10 @@ export const TagSelect = ({
       loading={isLoading}
       value={value}
       onChange={onChange}
+      showSearch={{
+        filterOption: (input, option) =>
+          (option?.label as string)?.toLowerCase().includes(input.toLowerCase()),
+      }}
       options={tags.map((tag) => ({ value: tag.id, label: tag.name }))}
       popupRender={(menu) => (
         <>

@@ -22,7 +22,21 @@ type UpdateContactBody = Partial<CreateContactBody>;
 interface ContactQuery {
   search?: string;
   tagIds?: string | string[];
-  sortBy?: 'name' | 'createdAt' | 'updatedAt';
+  meetingPlaceIds?: string | string[];
+  gender?: 'male' | 'female';
+  hasContact?: string;
+  metAtFrom?: string;
+  metAtTo?: string;
+  sortBy?:
+    | 'name'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'metAt'
+    | 'age'
+    | 'gender'
+    | 'height'
+    | 'occupation'
+    | 'meetingPlace';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -36,11 +50,30 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   fastify.get<{
     Querystring: ContactQuery;
   }>('/', async (request, reply) => {
-    const { search, tagIds, sortBy, sortOrder } = request.query;
+    const {
+      search,
+      tagIds,
+      meetingPlaceIds,
+      gender,
+      hasContact,
+      metAtFrom,
+      metAtTo,
+      sortBy,
+      sortOrder,
+    } = request.query;
 
     const filters = {
       search,
       tagIds: tagIds ? (Array.isArray(tagIds) ? tagIds : [tagIds]) : undefined,
+      meetingPlaceIds: meetingPlaceIds
+        ? Array.isArray(meetingPlaceIds)
+          ? meetingPlaceIds
+          : [meetingPlaceIds]
+        : undefined,
+      gender,
+      hasContact: hasContact === 'true',
+      metAtFrom,
+      metAtTo,
       sortBy,
       sortOrder,
     };
@@ -93,6 +126,12 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
     }
+  });
+
+  // DELETE /api/contacts/all - Delete all contacts
+  fastify.delete('/all', async (request, reply) => {
+    const result = await contactsService.deleteAll(request.user.userId);
+    return reply.send(result);
   });
 
   // DELETE /api/contacts/:id - Delete contact

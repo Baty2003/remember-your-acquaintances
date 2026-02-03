@@ -29,7 +29,21 @@ export type UpdateContactInput = Partial<CreateContactInput>;
 export interface ContactFilters {
   search?: string;
   tagIds?: string[];
-  sortBy?: 'name' | 'createdAt' | 'updatedAt';
+  meetingPlaceIds?: string[];
+  gender?: 'male' | 'female';
+  hasContact?: boolean;
+  metAtFrom?: string;
+  metAtTo?: string;
+  sortBy?:
+    | 'name'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'metAt'
+    | 'age'
+    | 'gender'
+    | 'height'
+    | 'occupation'
+    | 'meetingPlace';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -62,6 +76,7 @@ export const contactsService = {
     const where: Record<string, unknown> = { userId };
 
     if (filters?.search) {
+      // Note: SQLite doesn't support mode: 'insensitive', but LIKE is case-insensitive by default
       where.OR = [
         { name: { contains: filters.search } },
         { occupation: { contains: filters.search } },
@@ -77,11 +92,41 @@ export const contactsService = {
       };
     }
 
-    const orderBy: Record<string, string> = {};
+    if (filters?.meetingPlaceIds?.length) {
+      where.meetingPlaceId = { in: filters.meetingPlaceIds };
+    }
+
+    if (filters?.gender) {
+      where.gender = filters.gender;
+    }
+
+    if (filters?.hasContact) {
+      where.links = {
+        some: {
+          type: { in: ['phone', 'telegram', 'instagram'] },
+        },
+      };
+    }
+
+    if (filters?.metAtFrom || filters?.metAtTo) {
+      where.metAt = {};
+      if (filters.metAtFrom) {
+        (where.metAt as Record<string, unknown>).gte = new Date(filters.metAtFrom);
+      }
+      if (filters.metAtTo) {
+        (where.metAt as Record<string, unknown>).lte = new Date(filters.metAtTo);
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let orderBy: any = { createdAt: 'desc' };
     if (filters?.sortBy) {
-      orderBy[filters.sortBy] = filters.sortOrder || 'asc';
-    } else {
-      orderBy.createdAt = 'desc';
+      const sortOrder = filters.sortOrder || 'asc';
+      if (filters.sortBy === 'meetingPlace') {
+        orderBy = { meetingPlace: { name: sortOrder } };
+      } else {
+        orderBy = { [filters.sortBy]: sortOrder };
+      }
     }
 
     const contacts = await prisma.contact.findMany({
@@ -221,6 +266,14 @@ export const contactsService = {
     });
 
     return { success: true };
+  },
+
+  async deleteAll(userId: string) {
+    const result = await prisma.contact.deleteMany({
+      where: { userId },
+    });
+
+    return { success: true, deleted: result.count };
   },
 
   async updatePhoto(id: string, userId: string, photoUrl: string) {

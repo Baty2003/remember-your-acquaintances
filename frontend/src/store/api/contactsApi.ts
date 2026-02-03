@@ -21,6 +21,21 @@ export const contactsApi = baseApi.injectEndpoints({
         if (filters?.tagIds?.length) {
           filters.tagIds.forEach((id) => params.append('tagIds', id));
         }
+        if (filters?.meetingPlaceIds?.length) {
+          filters.meetingPlaceIds.forEach((id) => params.append('meetingPlaceIds', id));
+        }
+        if (filters?.gender) {
+          params.append('gender', filters.gender);
+        }
+        if (filters?.hasContact) {
+          params.append('hasContact', 'true');
+        }
+        if (filters?.metAtFrom) {
+          params.append('metAtFrom', filters.metAtFrom);
+        }
+        if (filters?.metAtTo) {
+          params.append('metAtTo', filters.metAtTo);
+        }
         if (filters?.sortBy) {
           params.append('sortBy', filters.sortBy);
         }
@@ -78,6 +93,14 @@ export const contactsApi = baseApi.injectEndpoints({
       ],
     }),
 
+    deleteAllContacts: builder.mutation<{ success: boolean; deleted: number }, void>({
+      query: () => ({
+        url: '/api/contacts/all',
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Contacts', id: 'LIST' }, 'Stats'],
+    }),
+
     importContacts: builder.mutation<ImportResult, ContactImportItem[]>({
       query: (contacts) => ({
         url: '/api/contacts/import',
@@ -100,5 +123,6 @@ export const {
   useCreateContactMutation,
   useUpdateContactMutation,
   useDeleteContactMutation,
+  useDeleteAllContactsMutation,
   useImportContactsMutation,
 } = contactsApi;

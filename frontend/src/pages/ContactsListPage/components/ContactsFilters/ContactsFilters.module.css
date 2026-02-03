@@ -1,0 +1,43 @@
+.collapse {
+  margin-bottom: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.filtersContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.select {
+  min-width: 180px;
+}
+
+.datePicker {
+  min-width: 220px;
+}
+
+.clearButton {
+  margin-left: auto;
+}
+
+.badge {
+  color: #1890ff;
+  font-size: 10px;
+}

@@ -1,0 +1,1 @@
+export { ContactDetailsPopover } from './ContactDetailsPopover';

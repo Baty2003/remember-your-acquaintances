@@ -1,0 +1,168 @@
+.tableContainer {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 180px 50px 75px 60px 130px 110px 85px 130px 90px;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 600;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 50px 75px 60px 130px 110px 85px 130px 90px;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  font-size: 13px;
+  align-items: center;
+  height: 48px;
+  box-sizing: border-box;
+}
+
+.row:hover {
+  background: #fafafa;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #1890ff;
+  font-weight: 700;
+}
+
+.sortable:hover {
+  color: #40a9ff;
+}
+
+.sortIcon {
+  width: 12px;
+}
+
+.sortIconActive {
+  color: #1890ff;
+  font-size: 12px;
+}
+
+.cellName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.avatar {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.infoIcon {
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.infoIcon:hover {
+  opacity: 1;
+}
+
+.cellSmall {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.cellMedium {
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.cellTags {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.tagsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.tag {
+  margin: 0 !important;
+  font-size: 11px;
+  line-height: 18px;
+  padding: 0 6px;
+}
+
+.moreText {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.cellLinks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.linkIcon {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.genderMale {
+  color: #1890ff;
+  font-size: 16px;
+}
+
+.genderFemale {
+  color: #eb2f96;
+  font-size: 16px;
+}

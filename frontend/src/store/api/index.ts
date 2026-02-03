@@ -9,6 +9,7 @@ export {
   useCreateContactMutation,
   useUpdateContactMutation,
   useDeleteContactMutation,
+  useDeleteAllContactsMutation,
   useImportContactsMutation,
 } from './contactsApi';
 

@@ -18,3 +18,6 @@ export { ContactLinksInput } from './ContactLinksInput';
 
 // Import
 export { ContactImportModal } from './ContactImportModal';
+
+// Contact Details
+export { ContactDetailsPopover } from './ContactDetailsPopover';

@@ -88,7 +88,12 @@ export interface ContactsResponse {
 export interface ContactFilters {
   search?: string;
   tagIds?: string[];
-  sortBy?: 'name' | 'createdAt' | 'updatedAt';
+  meetingPlaceIds?: string[];
+  gender?: Gender;
+  hasContact?: boolean;
+  metAtFrom?: string;
+  metAtTo?: string;
+  sortBy?: 'name' | 'createdAt' | 'updatedAt' | 'metAt' | 'age' | 'gender' | 'height' | 'occupation' | 'meetingPlace';
   sortOrder?: 'asc' | 'desc';
 }
 

@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 import { baseApi } from './api';
+import { errorMiddleware } from './middleware';
 
 export const store = configureStore({
   reducer: {
@@ -8,7 +9,7 @@ export const store = configureStore({
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware),
+    getDefaultMiddleware().concat(baseApi.middleware, errorMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -27,6 +28,7 @@ export {
   useCreateContactMutation,
   useUpdateContactMutation,
   useDeleteContactMutation,
+  useDeleteAllContactsMutation,
   useImportContactsMutation,
   useGetStatsQuery,
   useGetTagsQuery,
