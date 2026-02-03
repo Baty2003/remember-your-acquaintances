@@ -1,6 +1,6 @@
-import { Typography } from 'antd';
-import { JSON_EXAMPLE } from '../../constants';
-import styles from './FormatHint.module.css';
+import { Typography } from "antd";
+import { JSON_EXAMPLE } from "../../constants";
+import styles from "./FormatHint.module.css";
 
 const { Text, Paragraph } = Typography;
 

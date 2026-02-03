@@ -1,6 +1,6 @@
-import { Typography } from 'antd';
-import sharedStyles from '../shared.module.css';
-import styles from './AdditionalInformationBlock.module.css';
+import { Typography } from "antd";
+import sharedStyles from "../shared.module.css";
+import styles from "./AdditionalInformationBlock.module.css";
 
 const { Text } = Typography;
 
@@ -8,7 +8,9 @@ interface AdditionalInformationBlockProps {
   customFields?: Record<string, string>;
 }
 
-export const AdditionalInformationBlock = ({ customFields }: AdditionalInformationBlockProps) => {
+export const AdditionalInformationBlock = ({
+  customFields,
+}: AdditionalInformationBlockProps) => {
   if (!customFields || Object.keys(customFields).length === 0) {
     return null;
   }
@@ -23,7 +25,7 @@ export const AdditionalInformationBlock = ({ customFields }: AdditionalInformati
             </Text>
             <Text className={sharedStyles.factValue}>{value}</Text>
           </div>
-        ) : null
+        ) : null,
       )}
     </div>
   );

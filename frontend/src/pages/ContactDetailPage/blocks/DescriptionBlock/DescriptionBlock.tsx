@@ -1,5 +1,5 @@
-import { Typography } from 'antd';
-import styles from './DescriptionBlock.module.css';
+import { Typography } from "antd";
+import styles from "./DescriptionBlock.module.css";
 
 const { Paragraph } = Typography;
 

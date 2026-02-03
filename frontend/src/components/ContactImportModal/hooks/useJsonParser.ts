@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import type { ContactImportItem } from '../../../types';
+import { useState, useCallback } from "react";
+import type { ContactImportItem } from "../../../types";
 
 interface ParseResult {
   contacts: ContactImportItem[];
@@ -18,18 +18,19 @@ const validateContacts = (data: unknown): ParseResult => {
   // Handle both array and object with contacts property
   const contacts: ContactImportItem[] = Array.isArray(data)
     ? data
-    : (data as { contacts?: ContactImportItem[] }).contacts ?? [];
+    : ((data as { contacts?: ContactImportItem[] }).contacts ?? []);
 
   if (!Array.isArray(contacts)) {
     return {
       contacts: [],
-      error: 'JSON must be an array of contacts or an object with "contacts" array',
+      error:
+        'JSON must be an array of contacts or an object with "contacts" array',
     };
   }
 
   // Validate each contact has at least a name
   const invalidContacts = contacts.filter(
-    (c) => !c.name || typeof c.name !== 'string' || c.name.trim() === ''
+    (c) => !c.name || typeof c.name !== "string" || c.name.trim() === "",
   );
 
   if (invalidContacts.length > 0) {
@@ -42,7 +43,7 @@ const validateContacts = (data: unknown): ParseResult => {
   if (contacts.length > 100) {
     return {
       contacts: [],
-      error: 'Cannot import more than 100 contacts at once',
+      error: "Cannot import more than 100 contacts at once",
     };
   }
 
@@ -61,7 +62,7 @@ export const useJsonParser = (): UseJsonParserReturn => {
   const parseJson = useCallback((text: string) => {
     try {
       if (!text.trim()) {
-        setParseError('Please enter JSON text');
+        setParseError("Please enter JSON text");
         setParsedContacts([]);
         return;
       }
@@ -77,28 +78,32 @@ export const useJsonParser = (): UseJsonParserReturn => {
         setParseError(null);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to parse JSON';
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to parse JSON";
       setParseError(errorMessage);
       setParsedContacts([]);
     }
   }, []);
 
-  const parseFile = useCallback((file: File): false => {
-    const reader = new FileReader();
+  const parseFile = useCallback(
+    (file: File): false => {
+      const reader = new FileReader();
 
-    reader.onload = (e) => {
-      const content = e.target?.result as string;
-      parseJson(content);
-    };
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        parseJson(content);
+      };
 
-    reader.onerror = () => {
-      setParseError('Failed to read file');
-      setParsedContacts([]);
-    };
+      reader.onerror = () => {
+        setParseError("Failed to read file");
+        setParsedContacts([]);
+      };
 
-    reader.readAsText(file);
-    return false; // Prevent default upload behavior
-  }, [parseJson]);
+      reader.readAsText(file);
+      return false; // Prevent default upload behavior
+    },
+    [parseJson],
+  );
 
   return {
     parsedContacts,

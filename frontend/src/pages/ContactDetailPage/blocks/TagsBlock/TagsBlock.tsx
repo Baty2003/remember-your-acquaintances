@@ -1,6 +1,6 @@
-import { Tag } from 'antd';
-import type { Tag as TagType } from '../../../../types';
-import styles from './TagsBlock.module.css';
+import { Tag } from "antd";
+import type { Tag as TagType } from "../../../../types";
+import styles from "./TagsBlock.module.css";
 
 interface TagsBlockProps {
   tags?: TagType[];

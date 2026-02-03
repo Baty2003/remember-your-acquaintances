@@ -1,7 +1,7 @@
-import { Alert, Button, Table } from 'antd';
-import type { ContactImportItem } from '../../../../types';
-import { getImportColumns } from '../../constants';
-import styles from './ImportPreview.module.css';
+import { Alert, Button, Table } from "antd";
+import type { ContactImportItem } from "../../../../types";
+import { getImportColumns } from "../../constants";
+import styles from "./ImportPreview.module.css";
 
 interface ImportPreviewProps {
   contacts: ContactImportItem[];

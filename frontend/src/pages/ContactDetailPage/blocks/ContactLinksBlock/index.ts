@@ -1,1 +1,1 @@
-export { ContactLinksBlock } from './ContactLinksBlock';
+export { ContactLinksBlock } from "./ContactLinksBlock";

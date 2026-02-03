@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import fp from 'fastify-plugin';
 import { authService, JwtPayload } from '../services/auth.service.js';
+import { translateError, getLocaleFromHeader, type Locale } from '../lib/errors.js';
 
 // Extend Fastify types
 declare module 'fastify' {
@@ -18,25 +19,27 @@ async function authPlugin(app: FastifyInstance) {
 
   // Add authenticate method to fastify instance
   app.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
+    const locale: Locale = getLocaleFromHeader(request.headers['accept-language']);
+
     try {
       const authHeader = request.headers.authorization;
 
       if (!authHeader) {
-        return reply.status(401).send({ error: 'No authorization header' });
+        return reply.status(401).send({ error: translateError('No authorization header', locale) });
       }
 
       const [scheme, token] = authHeader.split(' ');
 
       if (scheme !== 'Bearer' || !token) {
-        return reply
-          .status(401)
-          .send({ error: 'Invalid authorization format. Use: Bearer <token>' });
+        return reply.status(401).send({
+          error: translateError('Invalid authorization format. Use: Bearer <token>', locale),
+        });
       }
 
       const payload = authService.verifyToken(token);
       request.user = payload;
     } catch {
-      return reply.status(401).send({ error: 'Invalid or expired token' });
+      return reply.status(401).send({ error: translateError('Invalid or expired token', locale) });
     }
   });
 }

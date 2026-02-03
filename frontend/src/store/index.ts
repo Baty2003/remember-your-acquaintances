@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authSlice';
-import { baseApi } from './api';
-import { errorMiddleware } from './middleware';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./authSlice";
+import { baseApi } from "./api";
+import { errorMiddleware } from "./middleware";
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +16,13 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 // Re-export auth actions
-export { logout, clearError, setUser, setCredentials, setError } from './authSlice';
+export {
+  logout,
+  clearError,
+  setUser,
+  setCredentials,
+  setError,
+} from "./authSlice";
 
 // Re-export RTK Query hooks
 export {
@@ -33,6 +39,7 @@ export {
   useCreateNoteMutation,
   useUpdateNoteMutation,
   useDeleteNoteMutation,
+  useUpdateLocaleMutation,
   useGetStatsQuery,
   useGetTagsQuery,
   useCreateTagMutation,
@@ -42,4 +49,4 @@ export {
   useCreateMeetingPlaceMutation,
   useUpdateMeetingPlaceMutation,
   useDeleteMeetingPlaceMutation,
-} from './api';
+} from "./api";

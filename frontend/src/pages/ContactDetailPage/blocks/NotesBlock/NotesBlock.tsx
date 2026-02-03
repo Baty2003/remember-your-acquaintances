@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Typography, Card, Divider } from 'antd';
-import type { Note } from '../../../../types';
-import { NoteDetailsModal } from '../../../../components';
-import styles from './NotesBlock.module.css';
+import { useState } from "react";
+import { Typography, Card, Divider } from "antd";
+import type { Note } from "../../../../types";
+import { NoteDetailsModal } from "../../../../components";
+import styles from "./NotesBlock.module.css";
 
 const { Text } = Typography;
 
@@ -13,20 +13,20 @@ interface NotesBlockProps {
 }
 
 const truncateContent = (text: string, maxLength: number) => {
-  if (!text) return '';
+  if (!text) return "";
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
 const formatMetaTime = (dateStr: string) => {
   const d = new Date(dateStr);
-  const datePart = d.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
+  const datePart = d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   });
-  const timePart = d.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const timePart = d.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
   });
   return `${datePart} · ${timePart}`;

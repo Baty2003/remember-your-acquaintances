@@ -1,1 +1,1 @@
-export { TagSelect } from './TagSelect';
+export { TagSelect } from "./TagSelect";

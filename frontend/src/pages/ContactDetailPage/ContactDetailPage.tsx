@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Card, Button, Spin, Empty, Collapse } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useGetContactQuery, useDeleteContactMutation } from '../../store';
-import { NotesModal } from '../../components';
-import { message } from 'antd';
+import { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card, Button, Spin, Empty, Collapse } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useGetContactQuery, useDeleteContactMutation } from "../../store";
+import { NotesModal } from "../../components";
+import { useLocale } from "../../contexts";
+import { message } from "antd";
 import {
   HeaderBlock,
   KeyFactsBlock,
@@ -15,14 +16,19 @@ import {
   TagsBlock,
   NotesBlock,
   MetadataBlock,
-} from './blocks';
-import styles from './ContactDetailPage.module.css';
+} from "./blocks";
+import styles from "./ContactDetailPage.module.css";
 
 export const ContactDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useLocale();
 
-  const { data: currentContact, isLoading, error } = useGetContactQuery(id!, {
+  const {
+    data: currentContact,
+    isLoading,
+    error,
+  } = useGetContactQuery(id!, {
     skip: !id,
   });
 
@@ -31,7 +37,7 @@ export const ContactDetailPage = () => {
 
   const collapseItems = useMemo(() => {
     if (!currentContact) return [];
-    
+
     const {
       occupation,
       occupationDetails,
@@ -51,8 +57,8 @@ export const ContactDetailPage = () => {
 
     if (occupation || occupationDetails || residence || residenceDetails) {
       items.push({
-        key: 'keyFacts',
-        label: 'Key Facts',
+        key: "keyFacts",
+        label: t("keyFacts"),
         children: (
           <KeyFactsBlock
             occupation={occupation}
@@ -66,24 +72,24 @@ export const ContactDetailPage = () => {
 
     if (details) {
       items.push({
-        key: 'personDetails',
-        label: 'Person Details',
+        key: "personDetails",
+        label: t("personDetails"),
         children: <DescriptionBlock details={details} />,
       });
     }
 
     if (customFields && Object.keys(customFields).length > 0) {
       items.push({
-        key: 'additionalInfo',
-        label: 'Additional Information',
+        key: "additionalInfo",
+        label: t("additionalInformation"),
         children: <AdditionalInformationBlock customFields={customFields} />,
       });
     }
 
     if (meetingPlace || metAt || howMet) {
       items.push({
-        key: 'meeting',
-        label: 'Meeting',
+        key: "meeting",
+        label: t("meeting"),
         children: (
           <MeetingBlock
             meetingPlace={meetingPlace}
@@ -96,38 +102,38 @@ export const ContactDetailPage = () => {
 
     if (links && links.length > 0) {
       items.push({
-        key: 'links',
-        label: 'Contact Links',
+        key: "links",
+        label: t("contactLinks"),
         children: <ContactLinksBlock links={links} />,
       });
     }
 
     if (tags && tags.length > 0) {
       items.push({
-        key: 'tags',
-        label: 'Tags',
+        key: "tags",
+        label: t("tags"),
         children: <TagsBlock tags={tags} />,
       });
     }
 
     if (notes && notes.length > 0) {
       items.push({
-        key: 'notes',
-        label: 'Notes',
+        key: "notes",
+        label: t("notes"),
         children: <NotesBlock notes={notes} />,
       });
     }
 
     return items;
-  }, [currentContact]);
+  }, [currentContact, t]);
 
   const defaultActiveKeys = useMemo(
     () => collapseItems.map((item) => item.key),
-    [collapseItems]
+    [collapseItems],
   );
 
   const handleBack = () => {
-    navigate('/contacts');
+    navigate("/contacts");
   };
 
   const handleEdit = () => {
@@ -138,8 +144,8 @@ export const ContactDetailPage = () => {
     if (!id) return;
     try {
       await deleteContact(id).unwrap();
-      message.success('Contact deleted successfully');
-      navigate('/contacts');
+      message.success("Contact deleted successfully");
+      navigate("/contacts");
     } catch (err) {
       message.error(err as string);
     }
@@ -162,9 +168,9 @@ export const ContactDetailPage = () => {
           onClick={handleBack}
           className={styles.backButton}
         >
-          Back to Contacts
+          {t("backToContacts")}
         </Button>
-        <Empty description="Contact not found" />
+        <Empty description={t("contactNotFound")} />
       </div>
     );
   }
@@ -190,7 +196,7 @@ export const ContactDetailPage = () => {
           onClick={handleBack}
           className={styles.backButton}
         >
-          Back to Contacts
+          {t("backToContacts")}
         </Button>
       </div>
 
@@ -207,6 +213,7 @@ export const ContactDetailPage = () => {
           onDelete={handleDelete}
           isDeleting={isDeleting}
           onViewNotes={() => setNotesModalOpen(true)}
+          t={t}
         />
 
         {collapseItems.length > 0 && (

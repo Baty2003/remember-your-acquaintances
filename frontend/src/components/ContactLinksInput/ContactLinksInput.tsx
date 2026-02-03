@@ -1,45 +1,53 @@
-import { useState } from 'react';
-import { Button, Input, Select } from 'antd';
-import { PlusOutlined, DeleteOutlined, PhoneOutlined, InstagramOutlined } from '@ant-design/icons';
-import { FaTelegram, FaVk } from 'react-icons/fa';
-import type { ContactLinkInput, ContactLinkType } from '../../types';
-import styles from './ContactLinksInput.module.css';
+import { useState } from "react";
+import { Button, Input, Select } from "antd";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  PhoneOutlined,
+  InstagramOutlined,
+} from "@ant-design/icons";
+import { FaTelegram, FaVk } from "react-icons/fa";
+import type { ContactLinkInput, ContactLinkType } from "../../types";
+import styles from "./ContactLinksInput.module.css";
 
-const LINK_TYPE_CONFIG: Record<ContactLinkType, {
-  label: string;
-  icon: React.ReactNode;
-  placeholder: string;
-  color: string;
-}> = {
+const LINK_TYPE_CONFIG: Record<
+  ContactLinkType,
+  {
+    label: string;
+    icon: React.ReactNode;
+    placeholder: string;
+    color: string;
+  }
+> = {
   phone: {
-    label: 'Phone',
+    label: "Phone",
     icon: <PhoneOutlined />,
-    placeholder: '+7 (999) 123-45-67',
-    color: '#52c41a',
+    placeholder: "+7 (999) 123-45-67",
+    color: "#52c41a",
   },
   telegram: {
-    label: 'Telegram',
+    label: "Telegram",
     icon: <FaTelegram />,
-    placeholder: '@username',
-    color: '#0088cc',
+    placeholder: "@username",
+    color: "#0088cc",
   },
   instagram: {
-    label: 'Instagram',
+    label: "Instagram",
     icon: <InstagramOutlined />,
-    placeholder: '@username',
-    color: '#E4405F',
+    placeholder: "@username",
+    color: "#E4405F",
   },
   vk: {
-    label: 'VK',
+    label: "VK",
     icon: <FaVk />,
-    placeholder: 'vk.com/username или ID',
-    color: '#4680C2',
+    placeholder: "vk.com/username или ID",
+    color: "#4680C2",
   },
   other: {
-    label: 'Other',
+    label: "Other",
     icon: null,
-    placeholder: 'Enter value',
-    color: '#666',
+    placeholder: "Enter value",
+    color: "#666",
   },
 };
 
@@ -48,7 +56,10 @@ interface ContactLinksInputProps {
   onChange?: (value: ContactLinkInput[]) => void;
 }
 
-export const ContactLinksInput = ({ value = [], onChange }: ContactLinksInputProps) => {
+export const ContactLinksInput = ({
+  value = [],
+  onChange,
+}: ContactLinksInputProps) => {
   const [links, setLinks] = useState<ContactLinkInput[]>(value);
 
   const updateLinks = (newLinks: ContactLinkInput[]) => {
@@ -57,7 +68,7 @@ export const ContactLinksInput = ({ value = [], onChange }: ContactLinksInputPro
   };
 
   const addLink = () => {
-    updateLinks([...links, { type: 'phone', value: '' }]);
+    updateLinks([...links, { type: "phone", value: "" }]);
   };
 
   const removeLink = (index: number) => {
@@ -65,7 +76,11 @@ export const ContactLinksInput = ({ value = [], onChange }: ContactLinksInputPro
     updateLinks(newLinks);
   };
 
-  const updateLink = (index: number, field: keyof ContactLinkInput, fieldValue: string) => {
+  const updateLink = (
+    index: number,
+    field: keyof ContactLinkInput,
+    fieldValue: string,
+  ) => {
     const newLinks = links.map((link, i) => {
       if (i === index) {
         return { ...link, [field]: fieldValue };
@@ -76,7 +91,11 @@ export const ContactLinksInput = ({ value = [], onChange }: ContactLinksInputPro
   };
 
   // Sync external value changes
-  if (JSON.stringify(value) !== JSON.stringify(links) && value.length > 0 && links.length === 0) {
+  if (
+    JSON.stringify(value) !== JSON.stringify(links) &&
+    value.length > 0 &&
+    links.length === 0
+  ) {
     setLinks(value);
   }
 
@@ -88,24 +107,31 @@ export const ContactLinksInput = ({ value = [], onChange }: ContactLinksInputPro
           <div key={index} className={styles.linkRow}>
             <Select
               value={link.type}
-              onChange={(newType) => updateLink(index, 'type', newType)}
+              onChange={(newType) => updateLink(index, "type", newType)}
               className={styles.typeSelect}
               popupMatchSelectWidth={false}
               options={Object.entries(LINK_TYPE_CONFIG).map(([type, cfg]) => ({
                 value: type,
                 label: (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span className={styles.selectIcon} style={{ color: cfg.color }}>{cfg.icon}</span>
+                  <span
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  >
+                    <span
+                      className={styles.selectIcon}
+                      style={{ color: cfg.color }}
+                    >
+                      {cfg.icon}
+                    </span>
                     {cfg.label}
                   </span>
                 ),
               }))}
             />
 
-            {link.type === 'other' && (
+            {link.type === "other" && (
               <Input
-                value={link.label || ''}
-                onChange={(e) => updateLink(index, 'label', e.target.value)}
+                value={link.label || ""}
+                onChange={(e) => updateLink(index, "label", e.target.value)}
                 placeholder="Label"
                 className={styles.labelInput}
               />
@@ -113,11 +139,14 @@ export const ContactLinksInput = ({ value = [], onChange }: ContactLinksInputPro
 
             <Input
               value={link.value}
-              onChange={(e) => updateLink(index, 'value', e.target.value)}
+              onChange={(e) => updateLink(index, "value", e.target.value)}
               placeholder={config.placeholder}
               className={styles.valueInput}
               prefix={
-                <span className={styles.prefixIcon} style={{ color: config.color }}>
+                <span
+                  className={styles.prefixIcon}
+                  style={{ color: config.color }}
+                >
                   {config.icon}
                 </span>
               }

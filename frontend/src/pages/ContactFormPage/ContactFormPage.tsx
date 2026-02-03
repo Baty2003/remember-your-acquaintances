@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -13,59 +13,75 @@ import {
   Checkbox,
   DatePicker,
   Divider,
-} from 'antd';
-import dayjs from 'dayjs';
-import { ArrowLeftOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+} from "antd";
+import dayjs from "dayjs";
+import {
+  ArrowLeftOutlined,
+  ManOutlined,
+  WomanOutlined,
+} from "@ant-design/icons";
 import {
   useGetContactQuery,
   useCreateContactMutation,
   useUpdateContactMutation,
-} from '../../store';
-import { TagSelect, MeetingPlaceSelect, ContactLinksInput, CustomFieldsInput } from '../../components';
-import type { CreateContactRequest } from '../../types';
-import styles from './ContactFormPage.module.css';
+} from "../../store";
+import {
+  TagSelect,
+  MeetingPlaceSelect,
+  ContactLinksInput,
+  CustomFieldsInput,
+} from "../../components";
+import { useLocale } from "../../contexts";
+import type { CreateContactRequest } from "../../types";
+import styles from "./ContactFormPage.module.css";
 
 const { TextArea } = Input;
-
-const AGE_TYPE_OPTIONS = [
-  { value: 'exact', label: 'Exact' },
-  { value: 'approximate', label: 'Approximate' },
-];
-
-const HEIGHT_TYPE_OPTIONS = [
-  { value: 'exact', label: 'Exact' },
-  { value: 'approximate', label: 'Approximate' },
-];
-
 
 export const ContactFormPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const { t } = useLocale();
 
   const isEditMode = Boolean(id);
 
-  const { data: currentContact, isLoading: isLoadingContact } = useGetContactQuery(id!, {
-    skip: !id,
-  });
+  const ageTypeOptions = [
+    { value: "exact", label: t("exact") },
+    { value: "approximate", label: t("approximate") },
+  ];
+
+  const heightTypeOptions = [
+    { value: "exact", label: t("exact") },
+    { value: "approximate", label: t("approximate") },
+  ];
+
+  const { data: currentContact, isLoading: isLoadingContact } =
+    useGetContactQuery(id!, {
+      skip: !id,
+    });
 
   // Calculate initial isMetToday value based on currentContact
   const metAtValue = currentContact?.metAt;
   const initialIsMetToday = useMemo(() => {
     if (metAtValue) {
-      return dayjs(metAtValue).isSame(dayjs(), 'day');
+      return dayjs(metAtValue).isSame(dayjs(), "day");
     }
     return true;
   }, [metAtValue]);
 
   const [isMetToday, setIsMetToday] = useState<boolean | null>(null);
-  const [showResidenceDetailsToggled, setShowResidenceDetailsToggled] = useState<boolean | null>(null);
-  const [showPersonDetailsToggled, setShowPersonDetailsToggled] = useState<boolean | null>(null);
+  const [showResidenceDetailsToggled, setShowResidenceDetailsToggled] =
+    useState<boolean | null>(null);
+  const [showPersonDetailsToggled, setShowPersonDetailsToggled] = useState<
+    boolean | null
+  >(null);
 
   // Use the calculated value if state hasn't been set by user
   const effectiveIsMetToday = isMetToday ?? initialIsMetToday;
-  const showResidenceDetails = showResidenceDetailsToggled ?? Boolean(currentContact?.residenceDetails);
-  const showPersonDetails = showPersonDetailsToggled ?? Boolean(currentContact?.details);
+  const showResidenceDetails =
+    showResidenceDetailsToggled ?? Boolean(currentContact?.residenceDetails);
+  const showPersonDetails =
+    showPersonDetailsToggled ?? Boolean(currentContact?.details);
 
   const [createContact, { isLoading: isCreating }] = useCreateContactMutation();
   const [updateContact, { isLoading: isUpdating }] = useUpdateContactMutation();
@@ -74,7 +90,9 @@ export const ContactFormPage = () => {
 
   useEffect(() => {
     if (currentContact && isEditMode) {
-      const metAtDate = currentContact.metAt ? dayjs(currentContact.metAt) : dayjs();
+      const metAtDate = currentContact.metAt
+        ? dayjs(currentContact.metAt)
+        : dayjs();
 
       // Reset toggles when switching to another contact
       // eslint-disable-next-line -- sync state when contact data loads for edit mode
@@ -84,27 +102,32 @@ export const ContactFormPage = () => {
         name: currentContact.name,
         gender: currentContact.gender,
         age: currentContact.age,
-        ageType: currentContact.ageType || 'exact',
-        birthDate: currentContact.birthDate ? dayjs(currentContact.birthDate) : undefined,
+        ageType: currentContact.ageType || "exact",
+        birthDate: currentContact.birthDate
+          ? dayjs(currentContact.birthDate)
+          : undefined,
         height: currentContact.height,
-        heightType: currentContact.heightType || 'exact',
+        heightType: currentContact.heightType || "exact",
         occupation: currentContact.occupation,
         occupationDetails: currentContact.occupationDetails,
         residence: currentContact.residence,
         residenceDetails: currentContact.residenceDetails,
         customFields: currentContact.customFields
-          ? Object.entries(currentContact.customFields).map(([name, value]) => ({ name, value }))
-          : [{ name: '', value: '' }],
+          ? Object.entries(currentContact.customFields).map(
+              ([name, value]) => ({ name, value }),
+            )
+          : [{ name: "", value: "" }],
         meetingPlaceId: currentContact.meetingPlaceId || null,
         howMet: currentContact.howMet,
         details: currentContact.details,
         metAt: metAtDate,
         tagIds: currentContact.tags?.map((t) => t.id) || [],
-        links: currentContact.links?.map((l) => ({
-          type: l.type,
-          label: l.label || undefined,
-          value: l.value,
-        })) || [],
+        links:
+          currentContact.links?.map((l) => ({
+            type: l.type,
+            label: l.label || undefined,
+            value: l.value,
+          })) || [],
       });
     }
   }, [currentContact, isEditMode, form]);
@@ -114,36 +137,37 @@ export const ContactFormPage = () => {
       metAt?: dayjs.Dayjs;
       birthDate?: dayjs.Dayjs;
       customFields?: { name: string; value: string }[];
-    }
+    },
   ) => {
     try {
       const customFieldsArray = values.customFields ?? [];
       const customFieldsRecord = customFieldsArray
         .filter((f) => f.name?.trim())
-        .reduce<Record<string, string>>(
-          (acc, f) => ({ ...acc, [f.name.trim()]: f.value || '' }),
-          {}
-        );
+        .reduce<
+          Record<string, string>
+        >((acc, f) => ({ ...acc, [f.name.trim()]: f.value || "" }), {});
 
       const data = {
         ...values,
         metAt: effectiveIsMetToday
           ? new Date().toISOString()
           : values.metAt?.toISOString() || new Date().toISOString(),
-        birthDate: values.birthDate ? values.birthDate.toISOString() : undefined,
-        details: showPersonDetails ? values.details : '',
-        residenceDetails: showResidenceDetails ? values.residenceDetails : '',
+        birthDate: values.birthDate
+          ? values.birthDate.toISOString()
+          : undefined,
+        details: showPersonDetails ? values.details : "",
+        residenceDetails: showResidenceDetails ? values.residenceDetails : "",
         customFields: customFieldsRecord,
       };
-      
+
       if (isEditMode && id) {
         await updateContact({ id, data }).unwrap();
-        message.success('Contact updated successfully');
+        message.success(t("contactUpdatedSuccess"));
       } else {
         await createContact(data).unwrap();
-        message.success('Contact created successfully');
+        message.success(t("contactCreatedSuccess"));
       }
-      navigate('/contacts');
+      navigate("/contacts");
     } catch (error) {
       message.error(error as string);
     }
@@ -169,11 +193,11 @@ export const ContactFormPage = () => {
         onClick={handleBack}
         className={styles.backButton}
       >
-        Back
+        {t("back")}
       </Button>
 
       <Card
-        title={isEditMode ? 'Edit Contact' : 'Add New Contact'}
+        title={isEditMode ? t("editContact") : t("addNewContact")}
         className={styles.card}
       >
         <Form
@@ -181,28 +205,28 @@ export const ContactFormPage = () => {
           layout="vertical"
           onFinish={onFinish}
           initialValues={{
-            ageType: 'exact',
-            heightType: 'exact',
-            customFields: [{ name: '', value: '' }],
+            ageType: "exact",
+            heightType: "exact",
+            customFields: [{ name: "", value: "" }],
           }}
         >
           <Form.Item
             name="name"
-            label="Name"
-            rules={[{ required: true, message: 'Please enter the name' }]}
+            label={t("name")}
+            rules={[{ required: true, message: t("pleaseEnterName") }]}
           >
-            <Input placeholder="Enter name" />
+            <Input placeholder={t("enterName")} />
           </Form.Item>
 
           <Divider />
 
-          <Form.Item name="gender" label="Gender">
+          <Form.Item name="gender" label={t("gender")}>
             <Radio.Group optionType="button">
               <Radio.Button value="male">
-                <ManOutlined /> Male
+                <ManOutlined /> {t("male")}
               </Radio.Button>
               <Radio.Button value="female">
-                <WomanOutlined /> Female
+                <WomanOutlined /> {t("female")}
               </Radio.Button>
             </Radio.Group>
           </Form.Item>
@@ -210,43 +234,66 @@ export const ContactFormPage = () => {
           <Divider />
 
           <div className={styles.row}>
-            <Form.Item name="age" label="Age" className={styles.ageInput}>
-              <InputNumber min={0} max={150} placeholder="Age" />
+            <Form.Item name="age" label={t("age")} className={styles.ageInput}>
+              <InputNumber min={0} max={150} placeholder={t("age")} />
             </Form.Item>
 
-            <Form.Item name="ageType" label="Age Type" className={styles.ageTypeInput}>
-              <Select options={AGE_TYPE_OPTIONS} />
+            <Form.Item
+              name="ageType"
+              label={t("ageType")}
+              className={styles.ageTypeInput}
+            >
+              <Select options={ageTypeOptions} />
             </Form.Item>
           </div>
 
-          <Form.Item name="birthDate" label="Date of Birth">
-            <DatePicker format="DD.MM.YYYY" placeholder="Select date" className={styles.datePicker} />
+          <Form.Item name="birthDate" label={t("birthDate")}>
+            <DatePicker
+              format="DD.MM.YYYY"
+              placeholder={t("selectDate")}
+              className={styles.datePicker}
+            />
           </Form.Item>
 
           <div className={styles.row}>
-            <Form.Item name="height" label="Height (cm)" className={styles.heightInput}>
-              <InputNumber min={0} max={300} placeholder="e.g., 175" />
+            <Form.Item
+              name="height"
+              label={t("heightCm")}
+              className={styles.heightInput}
+            >
+              <InputNumber
+                min={0}
+                max={300}
+                placeholder={t("heightPlaceholder")}
+              />
             </Form.Item>
 
-            <Form.Item name="heightType" label="Height Type" className={styles.heightTypeInput}>
-              <Select options={HEIGHT_TYPE_OPTIONS} />
+            <Form.Item
+              name="heightType"
+              label={t("heightType")}
+              className={styles.heightTypeInput}
+            >
+              <Select options={heightTypeOptions} />
             </Form.Item>
           </div>
 
           <Divider />
 
-          <Form.Item name="occupation" label="Occupation">
-            <Input placeholder="Enter occupation" />
+          <Form.Item name="occupation" label={t("occupation")}>
+            <Input placeholder={t("enterOccupation")} />
           </Form.Item>
 
-          <Form.Item name="occupationDetails" label="Occupation Details">
-            <TextArea rows={2} placeholder="Additional details about their work" />
+          <Form.Item name="occupationDetails" label={t("occupationDetails")}>
+            <TextArea
+              rows={2}
+              placeholder={t("occupationDetailsPlaceholder")}
+            />
           </Form.Item>
 
           <Divider />
 
-          <Form.Item name="residence" label="Place of Residence">
-            <Input placeholder="City, address, or area" />
+          <Form.Item name="residence" label={t("placeOfResidence")}>
+            <Input placeholder={t("cityAddressArea")} />
           </Form.Item>
 
           <Form.Item>
@@ -254,39 +301,42 @@ export const ContactFormPage = () => {
               checked={showResidenceDetails}
               onChange={(e) => setShowResidenceDetailsToggled(e.target.checked)}
             >
-              Add residence details
+              {t("addResidenceDetails")}
             </Checkbox>
           </Form.Item>
 
           {showResidenceDetails && (
-            <Form.Item name="residenceDetails" label="Residence Details">
-              <TextArea rows={3} placeholder="Additional information about the place of residence" />
+            <Form.Item name="residenceDetails" label={t("residenceDetails")}>
+              <TextArea
+                rows={3}
+                placeholder={t("residenceDetailsPlaceholder")}
+              />
             </Form.Item>
           )}
 
           <Divider />
 
-          <Form.Item name="meetingPlaceId" label="Where Met">
-            <MeetingPlaceSelect placeholder="Select where you met" />
+          <Form.Item name="meetingPlaceId" label={t("whereMet")}>
+            <MeetingPlaceSelect placeholder={t("selectWhereMet")} />
           </Form.Item>
 
-          <Form.Item name="howMet" label="How Met">
-            <TextArea rows={3} placeholder="Describe how you met" />
+          <Form.Item name="howMet" label={t("howMet")}>
+            <TextArea rows={3} placeholder={t("describeHowMet")} />
           </Form.Item>
 
-          <Form.Item label="When Met">
+          <Form.Item label={t("whenMet")}>
             <div className={styles.metAtRow}>
               <Checkbox
                 checked={effectiveIsMetToday}
                 onChange={(e) => setIsMetToday(e.target.checked)}
               >
-                Today
+                {t("today")}
               </Checkbox>
               {!effectiveIsMetToday && (
                 <Form.Item name="metAt" noStyle>
-                  <DatePicker 
+                  <DatePicker
                     format="DD.MM.YYYY"
-                    placeholder="Select date"
+                    placeholder={t("selectDate")}
                     className={styles.datePicker}
                   />
                 </Form.Item>
@@ -301,42 +351,46 @@ export const ContactFormPage = () => {
               checked={showPersonDetails}
               onChange={(e) => setShowPersonDetailsToggled(e.target.checked)}
             >
-              Add person details
+              {t("addPersonDetails")}
             </Checkbox>
           </Form.Item>
 
           {showPersonDetails && (
-            <Form.Item name="details" label="Person Details">
-              <TextArea rows={3} placeholder="Additional information about this person" />
+            <Form.Item name="details" label={t("personDetails")}>
+              <TextArea rows={3} placeholder={t("personDetailsPlaceholder")} />
             </Form.Item>
           )}
 
           <Divider />
 
-          <Form.Item name="tagIds" label="Tags">
+          <Form.Item name="tagIds" label={t("tags")}>
             <TagSelect />
           </Form.Item>
 
           <Divider />
 
-          <Form.Item name="links" label="Contact Links">
+          <Form.Item name="links" label={t("contactLinks")}>
             <ContactLinksInput />
           </Form.Item>
 
           <Divider />
 
-          <Form.Item name="customFields" label="Additional Information">
-            <CustomFieldsInput />
+          <Form.Item name="customFields" label={t("additionalInformation")}>
+            <CustomFieldsInput
+              fieldNamePlaceholder={t("fieldName")}
+              valuePlaceholder={t("value")}
+              addFieldLabel={t("addField")}
+            />
           </Form.Item>
 
           <Divider />
 
           <Form.Item className={styles.actions}>
             <Button onClick={handleBack} className={styles.cancelButton}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button type="primary" htmlType="submit" loading={isLoading}>
-              {isEditMode ? 'Update Contact' : 'Create Contact'}
+              {isEditMode ? t("updateContact") : t("createContact")}
             </Button>
           </Form.Item>
         </Form>

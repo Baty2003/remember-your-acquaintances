@@ -1,5 +1,5 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { ProtectedRoute, AppLayout } from './components';
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import { ProtectedRoute, AppLayout } from "./components";
 import {
   LoginPage,
   DashboardPage,
@@ -8,15 +8,15 @@ import {
   ContactDetailPage,
   TagsPage,
   MeetingPlacesPage,
-} from './pages';
+} from "./pages";
 
 export const router = createBrowserRouter([
   {
-    path: '/login',
+    path: "/login",
     element: <LoginPage />,
   },
   {
-    path: '/',
+    path: "/",
     element: (
       <ProtectedRoute>
         <AppLayout />
@@ -28,31 +28,31 @@ export const router = createBrowserRouter([
         element: <Navigate to="/contacts" replace />,
       },
       {
-        path: 'dashboard',
+        path: "dashboard",
         element: <DashboardPage />,
       },
       {
-        path: 'contacts',
+        path: "contacts",
         element: <ContactsListPage />,
       },
       {
-        path: 'contacts/new',
+        path: "contacts/new",
         element: <ContactFormPage />,
       },
       {
-        path: 'contacts/:id',
+        path: "contacts/:id",
         element: <ContactDetailPage />,
       },
       {
-        path: 'contacts/:id/edit',
+        path: "contacts/:id/edit",
         element: <ContactFormPage />,
       },
       {
-        path: 'tags',
+        path: "tags",
         element: <TagsPage />,
       },
       {
-        path: 'meeting-places',
+        path: "meeting-places",
         element: <MeetingPlacesPage />,
       },
     ],

@@ -1,5 +1,10 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { meetingPlacesService } from '../services/meetingPlaces.service.js';
+import { translateError, getLocaleFromHeader, type Locale } from '../lib/errors.js';
+
+function getLocale(request: FastifyRequest): Locale {
+  return getLocaleFromHeader(request.headers['accept-language']);
+}
 
 interface MeetingPlaceParams {
   id: string;
@@ -25,8 +30,9 @@ export async function meetingPlacesRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: CreateMeetingPlaceBody }>('/', async (request, reply) => {
     const { name } = request.body;
 
+    const locale = getLocale(request);
     if (!name || name.trim().length === 0) {
-      return reply.status(400).send({ error: 'Name is required' });
+      return reply.status(400).send({ error: translateError('Name is required', locale) });
     }
 
     try {
@@ -36,10 +42,11 @@ export async function meetingPlacesRoutes(fastify: FastifyInstance) {
       return reply.status(201).send(meetingPlace);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to create meeting place';
+      const translated = translateError(message, locale);
       if (message === 'Meeting place already exists') {
-        return reply.status(409).send({ error: message });
+        return reply.status(409).send({ error: translated });
       }
-      return reply.status(500).send({ error: message });
+      return reply.status(500).send({ error: translated });
     }
   });
 
@@ -50,8 +57,9 @@ export async function meetingPlacesRoutes(fastify: FastifyInstance) {
       const { id } = request.params;
       const { name } = request.body;
 
+      const locale = getLocale(request);
       if (!name || name.trim().length === 0) {
-        return reply.status(400).send({ error: 'Name is required' });
+        return reply.status(400).send({ error: translateError('Name is required', locale) });
       }
 
       try {
@@ -61,13 +69,14 @@ export async function meetingPlacesRoutes(fastify: FastifyInstance) {
         return reply.send(meetingPlace);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to update meeting place';
+        const translated = translateError(message, locale);
         if (message === 'Meeting place not found') {
-          return reply.status(404).send({ error: message });
+          return reply.status(404).send({ error: translated });
         }
         if (message === 'Meeting place already exists') {
-          return reply.status(409).send({ error: message });
+          return reply.status(409).send({ error: translated });
         }
-        return reply.status(500).send({ error: message });
+        return reply.status(500).send({ error: translated });
       }
     }
   );
@@ -81,13 +90,15 @@ export async function meetingPlacesRoutes(fastify: FastifyInstance) {
       return reply.status(204).send();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to delete meeting place';
+      const locale = getLocale(request);
+      const translated = translateError(message, locale);
       if (message === 'Meeting place not found') {
-        return reply.status(404).send({ error: message });
+        return reply.status(404).send({ error: translated });
       }
       if (message.startsWith('Cannot delete meeting place')) {
-        return reply.status(409).send({ error: message });
+        return reply.status(409).send({ error: translated });
       }
-      return reply.status(500).send({ error: message });
+      return reply.status(500).send({ error: translated });
     }
   });
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Modal,
   Typography,
@@ -7,11 +7,12 @@ import {
   Divider,
   Input,
   Popconfirm,
-} from 'antd';
-import { EditOutlined } from '@ant-design/icons';
-import type { Note } from '../../types';
-import { useUpdateNoteMutation, useDeleteNoteMutation } from '../../store';
-import styles from './NoteDetailsModal.module.css';
+} from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import type { Note } from "../../types";
+import { useUpdateNoteMutation, useDeleteNoteMutation } from "../../store";
+import { useLocale } from "../../contexts";
+import styles from "./NoteDetailsModal.module.css";
 
 const { TextArea } = Input;
 const { Title, Paragraph, Text } = Typography;
@@ -22,36 +23,45 @@ interface NoteDetailsModalProps {
   onClose: () => void;
 }
 
-const formatMetaTime = (dateStr: string) => {
+const formatMetaTime = (dateStr: string, locale: string) => {
   const d = new Date(dateStr);
-  const datePart = d.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
+  const datePart = d.toLocaleDateString(locale === "ru" ? "ru-RU" : "en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   });
-  const timePart = d.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const timePart = d.toLocaleTimeString(locale === "ru" ? "ru-RU" : "en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
   });
   return `${datePart} · ${timePart}`;
 };
 
-const getMetaDisplay = (note: Note) => {
-  const createdStr = formatMetaTime(note.createdAt);
-  const updatedStr = formatMetaTime(note.updatedAt);
+const getMetaDisplay = (
+  note: Note,
+  t: (key: import("../../i18n/translations").TranslationKey) => string,
+  locale: string,
+) => {
+  const createdStr = formatMetaTime(note.createdAt, locale);
+  const updatedStr = formatMetaTime(note.updatedAt, locale);
   const isSameTime =
     new Date(note.createdAt).getTime() === new Date(note.updatedAt).getTime();
   if (isSameTime) {
     return createdStr;
   }
-  return `Updated: ${updatedStr} · Created: ${createdStr}`;
+  return `${t("updatedLabel")}: ${updatedStr} · ${t("createdLabel")}: ${createdStr}`;
 };
 
-export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps) => {
+export const NoteDetailsModal = ({
+  open,
+  note,
+  onClose,
+}: NoteDetailsModalProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState('');
-  const [editDescription, setEditDescription] = useState('');
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const { t, locale } = useLocale();
 
   const [updateNote, { isLoading: isUpdating }] = useUpdateNoteMutation();
   const [deleteNote, { isLoading: isDeleting }] = useDeleteNoteMutation();
@@ -59,7 +69,7 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
   const handleStartEdit = () => {
     if (!note) return;
     setEditTitle(note.title);
-    setEditDescription(note.description || '');
+    setEditDescription(note.description || "");
     setIsEditing(true);
   };
 
@@ -84,7 +94,7 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
 
   const handleCancel = () => {
     setEditTitle(note.title);
-    setEditDescription(note.description || '');
+    setEditDescription(note.description || "");
     setIsEditing(false);
   };
 
@@ -115,7 +125,7 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
             <Input
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              placeholder="Title"
+              placeholder={t("title")}
               className={styles.titleInput}
               autoFocus
             />
@@ -128,22 +138,22 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
         <Space className={styles.actions}>
           {isEditing ? (
             <>
-              <Button onClick={handleCancel}>Cancel</Button>
+              <Button onClick={handleCancel}>{t("cancel")}</Button>
               <Button type="primary" onClick={handleSave} loading={isUpdating}>
-                Save
+                {t("save")}
               </Button>
             </>
           ) : (
             <Popconfirm
-              title="Delete note?"
-              description="This action cannot be undone."
+              title={t("deleteNoteConfirm")}
+              description={t("deleteNoteDescription")}
               onConfirm={handleDelete}
-              okText="Delete"
+              okText={t("deleteNote")}
               okButtonProps={{ danger: true }}
-              cancelText="Cancel"
+              cancelText={t("cancel")}
             >
               <Button type="primary" danger loading={isDeleting}>
-                Delete
+                {t("deleteNote")}
               </Button>
             </Popconfirm>
           )}
@@ -151,7 +161,7 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
       </div>
 
       <Text type="secondary" className={styles.meta}>
-        {getMetaDisplay(note)}
+        {getMetaDisplay(note, t, locale)}
       </Text>
 
       <Divider className={styles.divider} />
@@ -161,7 +171,7 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
           <TextArea
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
-            placeholder="Content"
+            placeholder={t("content")}
             className={styles.contentInput}
             rows={8}
             autoSize={{ minRows: 6, maxRows: 16 }}
@@ -169,7 +179,7 @@ export const NoteDetailsModal = ({ open, note, onClose }: NoteDetailsModalProps)
         ) : (
           <div className={styles.contentSectionWithEdit}>
             <Paragraph className={styles.content}>
-              {note.description || ''}
+              {note.description || ""}
             </Paragraph>
             <Button
               type="text"

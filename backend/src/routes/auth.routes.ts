@@ -1,9 +1,14 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { authService } from '../services/auth.service.js';
+import { translateError, getLocaleFromHeader, type Locale } from '../lib/errors.js';
 
 interface AuthBody {
   username: string;
   password: string;
+}
+
+interface LocaleBody {
+  locale: 'en' | 'ru';
 }
 
 const authBodySchema = {
@@ -14,6 +19,19 @@ const authBodySchema = {
     password: { type: 'string', minLength: 6, maxLength: 100 },
   },
 };
+
+const localeBodySchema = {
+  type: 'object',
+  required: ['locale'],
+  properties: {
+    locale: { type: 'string', enum: ['en', 'ru'] },
+  },
+};
+
+function getLocale(request: FastifyRequest): Locale {
+  const acceptLanguage = request.headers['accept-language'];
+  return getLocaleFromHeader(acceptLanguage);
+}
 
 export async function authRoutes(app: FastifyInstance) {
   // Register new user
@@ -36,12 +54,14 @@ export async function authRoutes(app: FastifyInstance) {
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Registration failed';
+        const locale = getLocale(request);
+        const translated = translateError(message, locale);
 
         if (message === 'Username already taken') {
-          return reply.status(409).send({ error: message });
+          return reply.status(409).send({ error: translated });
         }
 
-        return reply.status(500).send({ error: message });
+        return reply.status(500).send({ error: translated });
       }
     }
   );
@@ -66,7 +86,9 @@ export async function authRoutes(app: FastifyInstance) {
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Login failed';
-        return reply.status(401).send({ error: message });
+        const locale = getLocale(request);
+        const translated = translateError(message, locale);
+        return reply.status(401).send({ error: translated });
       }
     }
   );
@@ -82,12 +104,47 @@ export async function authRoutes(app: FastifyInstance) {
         const user = await authService.getUserById(request.user.userId);
 
         if (!user) {
-          return reply.status(404).send({ error: 'User not found' });
+          const locale = getLocale(request);
+          return reply.status(404).send({ error: translateError('User not found', locale) });
         }
 
-        return reply.send({ user });
+        return reply.send({
+          user: {
+            id: user.id,
+            username: user.username,
+            locale: user.locale ?? 'en',
+            createdAt: user.createdAt,
+          },
+        });
       } catch {
-        return reply.status(500).send({ error: 'Failed to get user' });
+        const locale = getLocale(request);
+        return reply.status(500).send({ error: translateError('Failed to get user', locale) });
+      }
+    }
+  );
+
+  // Update user locale (protected)
+  app.put<{ Body: LocaleBody }>(
+    '/locale',
+    {
+      preHandler: [app.authenticate],
+      schema: {
+        body: localeBodySchema,
+      },
+    },
+    async (request: FastifyRequest<{ Body: LocaleBody }>, reply: FastifyReply) => {
+      try {
+        const { locale } = request.body;
+        const result = await authService.updateLocale(request.user.userId, locale);
+        return reply.send(result);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Failed to update locale';
+        const locale = getLocale(request);
+        const translated = translateError(message, locale);
+        if (message === 'Invalid locale. Use "en" or "ru"') {
+          return reply.status(400).send({ error: translated });
+        }
+        return reply.status(500).send({ error: translated });
       }
     }
   );

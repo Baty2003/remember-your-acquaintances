@@ -14,6 +14,7 @@ export interface AuthResult {
   user: {
     id: string;
     username: string;
+    locale: string;
     createdAt: Date;
   };
   token: string;
@@ -82,6 +83,7 @@ export class AuthService {
       user: {
         id: user.id,
         username: user.username,
+        locale: (user as { locale?: string }).locale ?? 'en',
         createdAt: user.createdAt,
       },
       token,
@@ -118,6 +120,7 @@ export class AuthService {
       user: {
         id: user.id,
         username: user.username,
+        locale: (user as { locale?: string }).locale ?? 'en',
         createdAt: user.createdAt,
       },
       token,
@@ -133,9 +136,22 @@ export class AuthService {
       select: {
         id: true,
         username: true,
+        locale: true,
         createdAt: true,
       },
     });
+  }
+
+  async updateLocale(userId: string, locale: string): Promise<{ locale: string }> {
+    if (locale !== 'en' && locale !== 'ru') {
+      throw new Error('Invalid locale. Use "en" or "ru"');
+    }
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { locale },
+      select: { locale: true },
+    });
+    return { locale: user.locale };
   }
 }
 

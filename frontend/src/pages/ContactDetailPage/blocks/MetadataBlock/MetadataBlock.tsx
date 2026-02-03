@@ -1,5 +1,5 @@
-import { Typography, Divider } from 'antd';
-import styles from './MetadataBlock.module.css';
+import { Typography, Divider } from "antd";
+import styles from "./MetadataBlock.module.css";
 
 const { Text } = Typography;
 
@@ -14,10 +14,10 @@ export const MetadataBlock = ({ createdAt, updatedAt }: MetadataBlockProps) => {
       <Divider />
       <div className={styles.metadata}>
         <Text type="secondary" className={styles.metaText}>
-          Created: {new Date(createdAt).toLocaleDateString('ru-RU')}
+          Created: {new Date(createdAt).toLocaleDateString("ru-RU")}
         </Text>
         <Text type="secondary" className={styles.metaText}>
-          Updated: {new Date(updatedAt).toLocaleDateString('ru-RU')}
+          Updated: {new Date(updatedAt).toLocaleDateString("ru-RU")}
         </Text>
       </div>
     </>

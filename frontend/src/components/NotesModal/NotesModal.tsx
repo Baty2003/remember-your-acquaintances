@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Modal,
   List,
@@ -8,12 +8,13 @@ import {
   Typography,
   Empty,
   Divider,
-} from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import type { Note } from '../../types';
-import { useCreateNoteMutation } from '../../store';
-import { NoteDetailsModal } from './NoteDetailsModal';
-import styles from './NotesModal.module.css';
+} from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import type { Note } from "../../types";
+import { useCreateNoteMutation } from "../../store";
+import { useLocale } from "../../contexts";
+import { NoteDetailsModal } from "./NoteDetailsModal";
+import styles from "./NotesModal.module.css";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -28,23 +29,32 @@ interface NotesModalProps {
 }
 
 const truncateContent = (text: string, maxLength: number) => {
-  if (!text) return '';
+  if (!text) return "";
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
-export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps) => {
+export const NotesModal = ({
+  open,
+  onClose,
+  contactId,
+  notes,
+}: NotesModalProps) => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [form] = Form.useForm();
+  const { t } = useLocale();
 
   const [createNote, { isLoading: isCreating }] = useCreateNoteMutation();
 
-  const handleCreateNote = async (values: { title: string; description: string }) => {
+  const handleCreateNote = async (values: {
+    title: string;
+    description: string;
+  }) => {
     try {
       await createNote({
         contactId,
         title: values.title,
-        description: values.description || '',
+        description: values.description || "",
       }).unwrap();
       form.resetFields();
       setShowCreateForm(false);
@@ -67,14 +77,14 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
 
   const formatMetaTime = (dateStr: string) => {
     const d = new Date(dateStr);
-    const datePart = d.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
+    const datePart = d.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
-    const timePart = d.toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
+    const timePart = d.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: false,
     });
     return `${datePart} · ${timePart}`;
@@ -97,13 +107,13 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
     <Modal
       title={
         <div className={styles.header}>
-          <span className={styles.headerTitle}>Notes</span>
+          <span className={styles.headerTitle}>{t("notes")}</span>
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={handleOpenCreate}
           >
-            Create note
+            {t("createNote")}
           </Button>
         </div>
       }
@@ -116,7 +126,7 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
       <Divider className={styles.headerDivider} />
 
       <Modal
-        title="Create note"
+        title={t("createNote")}
         open={showCreateForm}
         onCancel={handleCloseCreateModal}
         footer={null}
@@ -125,20 +135,23 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
         <Form form={form} layout="vertical" onFinish={handleCreateNote}>
           <Form.Item
             name="title"
-            label="Title"
-            rules={[{ required: true, message: 'Enter title' }]}
+            label={t("title")}
+            rules={[{ required: true, message: "Enter title" }]}
           >
             <Input placeholder="Note title" />
           </Form.Item>
-          <Form.Item name="description" label="Description">
+          <Form.Item name="description" label={t("content")}>
             <TextArea rows={5} placeholder="Note content" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={isCreating}>
-              Save
+              {t("save")}
             </Button>
-            <Button onClick={handleCloseCreateModal} className={styles.cancelButton}>
-              Cancel
+            <Button
+              onClick={handleCloseCreateModal}
+              className={styles.cancelButton}
+            >
+              {t("cancel")}
             </Button>
           </Form.Item>
         </Form>
@@ -151,9 +164,9 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
                 <div className={styles.emptyContent}>
-                  <div className={styles.emptyTitle}>No notes yet</div>
+                  <div className={styles.emptyTitle}>{t("noNotesYet")}</div>
                   <div className={styles.emptyDescription}>
-                    Add the first note to remember important details
+                    {t("addFirstNote")}
                   </div>
                   <Button
                     type="primary"
@@ -161,7 +174,7 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
                     onClick={handleOpenCreate}
                     className={styles.emptyButton}
                   >
-                    Create note
+                    {t("createNote")}
                   </Button>
                 </div>
               }
@@ -174,7 +187,7 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
               renderItem={(note) => (
                 <List.Item className={styles.listItemWrapper}>
                   <div
-                    className={`${styles.noteCard} ${selectedNote?.id === note.id ? styles.selected : ''}`}
+                    className={`${styles.noteCard} ${selectedNote?.id === note.id ? styles.selected : ""}`}
                     onClick={() => {
                       setSelectedNote(note);
                       setShowCreateForm(false);
@@ -185,7 +198,10 @@ export const NotesModal = ({ open, onClose, contactId, notes }: NotesModalProps)
                     </Text>
                     {note.description ? (
                       <Text className={styles.noteContent}>
-                        {truncateContent(note.description, CONTENT_PREVIEW_LENGTH)}
+                        {truncateContent(
+                          note.description,
+                          CONTENT_PREVIEW_LENGTH,
+                        )}
                       </Text>
                     ) : null}
                     <Divider className={styles.noteDivider} />

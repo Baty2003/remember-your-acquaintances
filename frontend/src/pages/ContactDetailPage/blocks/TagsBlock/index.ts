@@ -1,1 +1,1 @@
-export { TagsBlock } from './TagsBlock';
+export { TagsBlock } from "./TagsBlock";

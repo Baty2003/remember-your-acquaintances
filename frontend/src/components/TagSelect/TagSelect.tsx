@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Select, Input, Button, Space, Divider, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { useGetTagsQuery, useCreateTagMutation } from '../../store';
-import styles from './TagSelect.module.css';
+import { useState } from "react";
+import { Select, Input, Button, Space, Divider, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { useGetTagsQuery, useCreateTagMutation } from "../../store";
+import styles from "./TagSelect.module.css";
 
 interface TagSelectProps {
   value?: string[];
@@ -13,9 +13,9 @@ interface TagSelectProps {
 export const TagSelect = ({
   value,
   onChange,
-  placeholder = 'Select tags',
+  placeholder = "Select tags",
 }: TagSelectProps) => {
-  const [newTagName, setNewTagName] = useState('');
+  const [newTagName, setNewTagName] = useState("");
 
   const { data, isLoading } = useGetTagsQuery();
   const [createTag] = useCreateTagMutation();
@@ -27,16 +27,16 @@ export const TagSelect = ({
 
     try {
       await createTag({ name: newTagName.trim() }).unwrap();
-      setNewTagName('');
-      message.success('Tag created');
+      setNewTagName("");
+      message.success("Tag created");
     } catch {
-      message.error('Failed to create tag');
+      message.error("Failed to create tag");
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation();
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleAddTag();
     }
@@ -51,7 +51,9 @@ export const TagSelect = ({
       onChange={onChange}
       showSearch={{
         filterOption: (input, option) =>
-          (option?.label as string)?.toLowerCase().includes(input.toLowerCase()),
+          (option?.label as string)
+            ?.toLowerCase()
+            .includes(input.toLowerCase()),
       }}
       options={tags.map((tag) => ({ value: tag.id, label: tag.name }))}
       popupRender={(menu) => (

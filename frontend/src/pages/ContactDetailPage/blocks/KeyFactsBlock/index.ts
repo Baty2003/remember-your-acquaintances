@@ -1,1 +1,1 @@
-export { KeyFactsBlock } from './KeyFactsBlock';
+export { KeyFactsBlock } from "./KeyFactsBlock";

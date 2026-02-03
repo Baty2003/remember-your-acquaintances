@@ -1,6 +1,12 @@
-export { baseApi } from './baseApi';
+export { baseApi } from "./baseApi";
 
-export { authApi, useLoginMutation, useRegisterMutation, useGetMeQuery } from './authApi';
+export {
+  authApi,
+  useLoginMutation,
+  useRegisterMutation,
+  useGetMeQuery,
+  useUpdateLocaleMutation,
+} from "./authApi";
 
 export {
   contactsApi,
@@ -14,9 +20,9 @@ export {
   useCreateNoteMutation,
   useUpdateNoteMutation,
   useDeleteNoteMutation,
-} from './contactsApi';
+} from "./contactsApi";
 
-export { statsApi, useGetStatsQuery } from './statsApi';
+export { statsApi, useGetStatsQuery } from "./statsApi";
 
 export {
   tagsApi,
@@ -24,7 +30,7 @@ export {
   useCreateTagMutation,
   useUpdateTagMutation,
   useDeleteTagMutation,
-} from './tagsApi';
+} from "./tagsApi";
 
 export {
   meetingPlacesApi,
@@ -32,4 +38,4 @@ export {
   useCreateMeetingPlaceMutation,
   useUpdateMeetingPlaceMutation,
   useDeleteMeetingPlaceMutation,
-} from './meetingPlacesApi';
+} from "./meetingPlacesApi";

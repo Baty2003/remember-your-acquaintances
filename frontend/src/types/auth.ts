@@ -1,6 +1,7 @@
 export interface User {
   id: string;
   username: string;
+  locale?: string;
   createdAt: string;
 }
 

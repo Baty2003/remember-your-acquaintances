@@ -1,2 +1,2 @@
-export { JSON_EXAMPLE } from './jsonExample';
-export { getImportColumns } from './columns';
+export { JSON_EXAMPLE } from "./jsonExample";
+export { getImportColumns } from "./columns";

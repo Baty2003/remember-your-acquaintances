@@ -1,5 +1,5 @@
-import { baseApi } from './baseApi';
-import type { Tag } from '../../types';
+import { baseApi } from "./baseApi";
+import type { Tag } from "../../types";
 
 interface TagsResponse {
   tags: Tag[];
@@ -17,34 +17,34 @@ interface UpdateTagRequest {
 export const tagsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTags: builder.query<TagsResponse, void>({
-      query: () => '/api/tags',
-      providesTags: ['Tags'],
+      query: () => "/api/tags",
+      providesTags: ["Tags"],
     }),
 
     createTag: builder.mutation<Tag, CreateTagRequest>({
       query: (data) => ({
-        url: '/api/tags',
-        method: 'POST',
+        url: "/api/tags",
+        method: "POST",
         body: data,
       }),
-      invalidatesTags: ['Tags', 'Stats'],
+      invalidatesTags: ["Tags", "Stats"],
     }),
 
     updateTag: builder.mutation<Tag, UpdateTagRequest>({
       query: ({ id, name }) => ({
         url: `/api/tags/${id}`,
-        method: 'PUT',
+        method: "PUT",
         body: { name },
       }),
-      invalidatesTags: ['Tags'],
+      invalidatesTags: ["Tags"],
     }),
 
     deleteTag: builder.mutation<void, string>({
       query: (id) => ({
         url: `/api/tags/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['Tags', 'Stats'],
+      invalidatesTags: ["Tags", "Stats"],
     }),
   }),
 });

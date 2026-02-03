@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { Select, Input, Button, Space, Divider, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { useGetMeetingPlacesQuery, useCreateMeetingPlaceMutation } from '../../store';
-import styles from './MeetingPlaceSelect.module.css';
+import { useState } from "react";
+import { Select, Input, Button, Space, Divider, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import {
+  useGetMeetingPlacesQuery,
+  useCreateMeetingPlaceMutation,
+} from "../../store";
+import styles from "./MeetingPlaceSelect.module.css";
 
 interface MeetingPlaceSelectProps {
   value?: string | null;
@@ -13,9 +16,9 @@ interface MeetingPlaceSelectProps {
 export const MeetingPlaceSelect = ({
   value,
   onChange,
-  placeholder = 'Select meeting place',
+  placeholder = "Select meeting place",
 }: MeetingPlaceSelectProps) => {
-  const [newPlaceName, setNewPlaceName] = useState('');
+  const [newPlaceName, setNewPlaceName] = useState("");
 
   const { data, isLoading } = useGetMeetingPlacesQuery();
   const [createMeetingPlace] = useCreateMeetingPlaceMutation();
@@ -26,18 +29,20 @@ export const MeetingPlaceSelect = ({
     if (!newPlaceName.trim()) return;
 
     try {
-      const newPlace = await createMeetingPlace({ name: newPlaceName.trim() }).unwrap();
-      setNewPlaceName('');
+      const newPlace = await createMeetingPlace({
+        name: newPlaceName.trim(),
+      }).unwrap();
+      setNewPlaceName("");
       onChange?.(newPlace.id);
-      message.success('Meeting place created');
+      message.success("Meeting place created");
     } catch {
-      message.error('Failed to create meeting place');
+      message.error("Failed to create meeting place");
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation();
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleAddPlace();
     }
@@ -50,7 +55,10 @@ export const MeetingPlaceSelect = ({
       value={value || undefined}
       onChange={(val) => onChange?.(val || null)}
       allowClear
-      options={meetingPlaces.map((place) => ({ value: place.id, label: place.name }))}
+      options={meetingPlaces.map((place) => ({
+        value: place.id,
+        label: place.name,
+      }))}
       popupRender={(menu) => (
         <>
           {menu}
@@ -62,7 +70,11 @@ export const MeetingPlaceSelect = ({
               onChange={(e) => setNewPlaceName(e.target.value)}
               onKeyDown={handleKeyDown}
             />
-            <Button type="text" icon={<PlusOutlined />} onClick={handleAddPlace}>
+            <Button
+              type="text"
+              icon={<PlusOutlined />}
+              onClick={handleAddPlace}
+            >
               Add
             </Button>
           </Space>

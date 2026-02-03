@@ -1,5 +1,5 @@
-import { useState, memo, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, memo, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   Input,
@@ -12,7 +12,7 @@ import {
   Segmented,
   Modal,
   notification,
-} from 'antd';
+} from "antd";
 import {
   PlusOutlined,
   SearchOutlined,
@@ -23,15 +23,20 @@ import {
   UnorderedListOutlined,
   TableOutlined,
   DeleteOutlined,
-} from '@ant-design/icons';
-import VirtualList from 'rc-virtual-list';
-import dayjs from 'dayjs';
-import { useGetContactsQuery, useGetTagsQuery, useGetMeetingPlacesQuery, useDeleteAllContactsMutation } from '../../store';
-import { useDebounce } from '../../hooks';
-import { ContactImportModal } from '../../components';
-import { ContactsFilters, ContactsTable } from './components';
-import type { Contact, ContactFilters } from '../../types';
-import styles from './ContactsListPage.module.css';
+} from "@ant-design/icons";
+import VirtualList from "rc-virtual-list";
+import dayjs from "dayjs";
+import {
+  useGetContactsQuery,
+  useGetTagsQuery,
+  useGetMeetingPlacesQuery,
+  useDeleteAllContactsMutation,
+} from "../../store";
+import { useDebounce } from "../../hooks";
+import { ContactImportModal } from "../../components";
+import { ContactsFilters, ContactsTable } from "./components";
+import type { Contact, ContactFilters } from "../../types";
+import styles from "./ContactsListPage.module.css";
 
 const ITEM_HEIGHT = 88;
 const LIST_HEIGHT = 600;
@@ -39,22 +44,26 @@ const LIST_HEIGHT = 600;
 const { Text } = Typography;
 const { Search } = Input;
 
-type ViewMode = 'list' | 'table';
+type ViewMode = "list" | "table";
 
 const getBasicInfo = (contact: Contact): string => {
   const parts: string[] = [];
 
   if (contact.age) {
-    const ageStr = contact.ageType === 'approximate' ? `~${contact.age}` : `${contact.age}`;
+    const ageStr =
+      contact.ageType === "approximate" ? `~${contact.age}` : `${contact.age}`;
     parts.push(ageStr);
   }
 
   if (contact.height) {
-    const heightStr = contact.heightType === 'approximate' ? `~${contact.height} см` : `${contact.height} см`;
+    const heightStr =
+      contact.heightType === "approximate"
+        ? `~${contact.height} см`
+        : `${contact.height} см`;
     parts.push(heightStr);
   }
 
-  return parts.join(' • ');
+  return parts.join(" • ");
 };
 
 const getDescriptionText = (contact: Contact): string | null => {
@@ -62,10 +71,14 @@ const getDescriptionText = (contact: Contact): string | null => {
     return contact.occupation;
   }
   if (contact.howMet) {
-    return contact.howMet.length > 100 ? `${contact.howMet.slice(0, 100)}...` : contact.howMet;
+    return contact.howMet.length > 100
+      ? `${contact.howMet.slice(0, 100)}...`
+      : contact.howMet;
   }
   if (contact.details) {
-    return contact.details.length > 100 ? `${contact.details.slice(0, 100)}...` : contact.details;
+    return contact.details.length > 100
+      ? `${contact.details.slice(0, 100)}...`
+      : contact.details;
   }
   return null;
 };
@@ -82,13 +95,28 @@ const ContactItem = memo(({ contact, onClick }: ContactItemProps) => {
   return (
     <div className={styles.listItem} onClick={() => onClick(contact.id)}>
       <div className={styles.listItemContent}>
-        <Avatar size={48} icon={<UserOutlined />} src={contact.photo} className={styles.avatar} />
+        <Avatar
+          size={48}
+          icon={<UserOutlined />}
+          src={contact.photo}
+          className={styles.avatar}
+        />
         <div className={styles.listItemMeta}>
           <div className={styles.nameRow}>
             <span className={styles.name}>{contact.name}</span>
             {contact.gender && (
-              <span className={contact.gender === 'male' ? styles.genderMale : styles.genderFemale}>
-                {contact.gender === 'male' ? <ManOutlined /> : <WomanOutlined />}
+              <span
+                className={
+                  contact.gender === "male"
+                    ? styles.genderMale
+                    : styles.genderFemale
+                }
+              >
+                {contact.gender === "male" ? (
+                  <ManOutlined />
+                ) : (
+                  <WomanOutlined />
+                )}
               </span>
             )}
             {basicInfo && (
@@ -98,7 +126,7 @@ const ContactItem = memo(({ contact, onClick }: ContactItemProps) => {
             )}
             {contact.metAt && (
               <Text type="secondary" className={styles.metAt}>
-                📅 {dayjs(contact.metAt).format('DD.MM.YY')}
+                📅 {dayjs(contact.metAt).format("DD.MM.YY")}
               </Text>
             )}
           </div>
@@ -120,35 +148,38 @@ const ContactItem = memo(({ contact, onClick }: ContactItemProps) => {
   );
 });
 
-const STORAGE_KEY_VIEW_MODE = 'contacts-view-mode';
+const STORAGE_KEY_VIEW_MODE = "contacts-view-mode";
 
 export const ContactsListPage = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     const saved = localStorage.getItem(STORAGE_KEY_VIEW_MODE);
-    return saved === 'table' ? 'table' : 'list';
+    return saved === "table" ? "table" : "list";
   });
   const [filters, setFilters] = useState<ContactFilters>({});
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 300);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] = useState(false);
 
-  const [deleteAllContacts, { isLoading: isDeleting }] = useDeleteAllContactsMutation();
+  const [deleteAllContacts, { isLoading: isDeleting }] =
+    useDeleteAllContactsMutation();
 
   const queryFilters = useMemo(
     () => ({
       ...filters,
       search: debouncedQuery || undefined,
     }),
-    [filters, debouncedQuery]
+    [filters, debouncedQuery],
   );
 
   const { data, isLoading } = useGetContactsQuery(
-    Object.keys(queryFilters).some((k) => queryFilters[k as keyof ContactFilters] !== undefined)
+    Object.keys(queryFilters).some(
+      (k) => queryFilters[k as keyof ContactFilters] !== undefined,
+    )
       ? queryFilters
       : undefined,
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const { data: tagsData } = useGetTagsQuery();
@@ -160,14 +191,14 @@ export const ContactsListPage = () => {
   const meetingPlaces = meetingPlacesData?.meetingPlaces ?? [];
 
   const handleAddContact = useCallback(() => {
-    navigate('/contacts/new');
+    navigate("/contacts/new");
   }, [navigate]);
 
   const handleViewContact = useCallback(
     (id: string) => {
       navigate(`/contacts/${id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   const handleFiltersChange = useCallback((newFilters: ContactFilters) => {
@@ -179,7 +210,7 @@ export const ContactsListPage = () => {
       const result = await deleteAllContacts().unwrap();
       setIsDeleteAllModalOpen(false);
       notification.success({
-        message: 'Удалено',
+        message: "Удалено",
         description: `Удалено ${result.deleted} контактов`,
       });
     } catch {
@@ -188,8 +219,8 @@ export const ContactsListPage = () => {
   }, [deleteAllContacts]);
 
   const viewModeOptions = [
-    { value: 'list', icon: <UnorderedListOutlined /> },
-    { value: 'table', icon: <TableOutlined /> },
+    { value: "list", icon: <UnorderedListOutlined /> },
+    { value: "table", icon: <TableOutlined /> },
   ];
 
   return (
@@ -215,16 +246,26 @@ export const ContactsListPage = () => {
               Удалить все
             </Button>
           )}
-          <Button icon={<ImportOutlined />} onClick={() => setIsImportModalOpen(true)}>
+          <Button
+            icon={<ImportOutlined />}
+            onClick={() => setIsImportModalOpen(true)}
+          >
             Импорт
           </Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAddContact}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAddContact}
+          >
             Добавить
           </Button>
         </Space>
       </div>
 
-      <ContactImportModal open={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} />
+      <ContactImportModal
+        open={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
 
       <Modal
         title="Удалить все контакты?"
@@ -265,8 +306,8 @@ export const ContactsListPage = () => {
           <Empty
             description={
               debouncedQuery || Object.keys(filters).length > 0
-                ? 'Контакты не найдены'
-                : 'Контактов пока нет. Добавьте первый!'
+                ? "Контакты не найдены"
+                : "Контактов пока нет. Добавьте первый!"
             }
           >
             {!debouncedQuery && Object.keys(filters).length === 0 && (
@@ -278,14 +319,23 @@ export const ContactsListPage = () => {
         ) : (
           <>
             <Text type="secondary" className={styles.count}>
-              {total} контакт{total === 1 ? '' : total < 5 ? 'а' : 'ов'}
+              {total} контакт{total === 1 ? "" : total < 5 ? "а" : "ов"}
             </Text>
 
-            {viewMode === 'list' ? (
+            {viewMode === "list" ? (
               <Spin spinning={isLoading}>
-                <VirtualList data={contacts} height={LIST_HEIGHT} itemHeight={ITEM_HEIGHT} itemKey="id">
+                <VirtualList
+                  data={contacts}
+                  height={LIST_HEIGHT}
+                  itemHeight={ITEM_HEIGHT}
+                  itemKey="id"
+                >
                   {(contact: Contact) => (
-                    <ContactItem key={contact.id} contact={contact} onClick={handleViewContact} />
+                    <ContactItem
+                      key={contact.id}
+                      contact={contact}
+                      onClick={handleViewContact}
+                    />
                   )}
                 </VirtualList>
               </Spin>

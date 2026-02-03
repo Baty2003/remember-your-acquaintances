@@ -1,1 +1,1 @@
-export { FileUploadTab } from './FileUploadTab';
+export { FileUploadTab } from "./FileUploadTab";

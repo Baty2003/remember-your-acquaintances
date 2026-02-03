@@ -1,36 +1,45 @@
-import { useState, useCallback } from 'react';
-import { Modal, Button, Alert, Tabs, message } from 'antd';
-import { UploadOutlined, EditOutlined } from '@ant-design/icons';
-import type { UploadFile } from 'antd/es/upload/interface';
-import { useImportContactsMutation } from '../../store';
-import { useJsonParser } from './hooks';
+import { useState, useCallback } from "react";
+import { Modal, Button, Alert, Tabs, message } from "antd";
+import { UploadOutlined, EditOutlined } from "@ant-design/icons";
+import type { UploadFile } from "antd/es/upload/interface";
+import { useImportContactsMutation } from "../../store";
+import { useJsonParser } from "./hooks";
 import {
   FileUploadTab,
   TextInputTab,
   ImportPreview,
   FormatHint,
-} from './components';
-import styles from './ContactImportModal.module.css';
+} from "./components";
+import styles from "./ContactImportModal.module.css";
 
-type InputMode = 'file' | 'text';
+type InputMode = "file" | "text";
 
 interface ContactImportModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export const ContactImportModal = ({ open, onClose }: ContactImportModalProps) => {
+export const ContactImportModal = ({
+  open,
+  onClose,
+}: ContactImportModalProps) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [inputMode, setInputMode] = useState<InputMode>('file');
-  const [jsonText, setJsonText] = useState('');
+  const [inputMode, setInputMode] = useState<InputMode>("file");
+  const [jsonText, setJsonText] = useState("");
 
-  const { parsedContacts, parseError, parseJson, parseFile, reset: resetParser } = useJsonParser();
+  const {
+    parsedContacts,
+    parseError,
+    parseJson,
+    parseFile,
+    reset: resetParser,
+  } = useJsonParser();
   const [importContacts, { isLoading }] = useImportContactsMutation();
 
   const resetState = useCallback(() => {
     resetParser();
     setFileList([]);
-    setJsonText('');
+    setJsonText("");
   }, [resetParser]);
 
   const handleClose = () => {
@@ -54,20 +63,22 @@ export const ContactImportModal = ({ open, onClose }: ContactImportModalProps) =
       }
 
       if (result.failed > 0) {
-        message.warning(`Не удалось импортировать ${result.failed} контакт(ов)`);
-        console.error('Import errors:', result.errors);
+        message.warning(
+          `Не удалось импортировать ${result.failed} контакт(ов)`,
+        );
+        console.error("Import errors:", result.errors);
       }
 
       handleClose();
     } catch (error) {
-      message.error('Не удалось импортировать контакты');
-      console.error('Import error:', error);
+      message.error("Не удалось импортировать контакты");
+      console.error("Import error:", error);
     }
   };
 
   const tabItems = [
     {
-      key: 'file',
+      key: "file",
       label: (
         <span>
           <UploadOutlined /> Загрузить файл
@@ -82,7 +93,7 @@ export const ContactImportModal = ({ open, onClose }: ContactImportModalProps) =
       ),
     },
     {
-      key: 'text',
+      key: "text",
       label: (
         <span>
           <EditOutlined /> Вставить текст
@@ -115,7 +126,8 @@ export const ContactImportModal = ({ open, onClose }: ContactImportModalProps) =
           loading={isLoading}
           disabled={parsedContacts.length === 0}
         >
-          Импортировать {parsedContacts.length > 0 ? `(${parsedContacts.length})` : ''}
+          Импортировать{" "}
+          {parsedContacts.length > 0 ? `(${parsedContacts.length})` : ""}
         </Button>,
       ]}
     >

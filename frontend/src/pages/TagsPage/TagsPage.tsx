@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Table,
   Button,
@@ -8,31 +8,33 @@ import {
   Typography,
   Popconfirm,
   message,
-} from 'antd';
+} from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
   CloseOutlined,
-} from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
+} from "@ant-design/icons";
+import type { ColumnsType } from "antd/es/table";
 import {
   useGetTagsQuery,
   useCreateTagMutation,
   useUpdateTagMutation,
   useDeleteTagMutation,
-} from '../../store';
-import type { Tag } from '../../types';
-import styles from './TagsPage.module.css';
+} from "../../store";
+import { useLocale } from "../../contexts";
+import type { Tag } from "../../types";
+import styles from "./TagsPage.module.css";
 
 const { Title } = Typography;
 
 export const TagsPage = () => {
+  const { t } = useLocale();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newTagName, setNewTagName] = useState('');
+  const [newTagName, setNewTagName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState('');
+  const [editingName, setEditingName] = useState("");
 
   const { data, isLoading } = useGetTagsQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -44,28 +46,28 @@ export const TagsPage = () => {
   const tags = data?.tags ?? [];
 
   const handleOpenModal = () => {
-    setNewTagName('');
+    setNewTagName("");
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setNewTagName('');
+    setNewTagName("");
   };
 
   const handleCreateTag = async () => {
     if (!newTagName.trim()) {
-      message.error('Please enter a tag name');
+      message.error(t("pleaseEnterTagName"));
       return;
     }
 
     try {
       await createTag({ name: newTagName.trim() }).unwrap();
-      message.success('Tag created');
+      message.success(t("tagCreated"));
       handleCloseModal();
     } catch (err) {
       const error = err as { data?: { error?: string } };
-      message.error(error.data?.error || 'Failed to create tag');
+      message.error(error.data?.error || t("failedToCreateTag"));
     }
   };
 
@@ -76,40 +78,40 @@ export const TagsPage = () => {
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    setEditingName('');
+    setEditingName("");
   };
 
   const handleSaveEdit = async () => {
     if (!editingId || !editingName.trim()) {
-      message.error('Please enter a tag name');
+      message.error(t("pleaseEnterTagName"));
       return;
     }
 
     try {
       await updateTag({ id: editingId, name: editingName.trim() }).unwrap();
-      message.success('Tag updated');
+      message.success(t("tagUpdated"));
       handleCancelEdit();
     } catch (err) {
       const error = err as { data?: { error?: string } };
-      message.error(error.data?.error || 'Failed to update tag');
+      message.error(error.data?.error || t("failedToUpdateTag"));
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await deleteTag(id).unwrap();
-      message.success('Tag deleted');
+      message.success(t("tagDeleted"));
     } catch (err) {
       const error = err as { data?: { error?: string } };
-      message.error(error.data?.error || 'Failed to delete tag');
+      message.error(error.data?.error || t("failedToDeleteTag"));
     }
   };
 
   const columns: ColumnsType<Tag> = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: t("name"),
+      dataIndex: "name",
+      key: "name",
       render: (_, record) => {
         if (editingId === record.id) {
           return (
@@ -126,15 +128,15 @@ export const TagsPage = () => {
       },
     },
     {
-      title: 'Created',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: t("createdLabel"),
+      dataIndex: "createdAt",
+      key: "createdAt",
       width: 150,
       render: (value: string) => new Date(value).toLocaleDateString(),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: t("actions"),
+      key: "actions",
       width: 120,
       render: (_, record) => {
         if (editingId === record.id) {
@@ -164,11 +166,11 @@ export const TagsPage = () => {
               onClick={() => handleStartEdit(record)}
             />
             <Popconfirm
-              title="Delete tag"
-              description="Are you sure you want to delete this tag?"
+              title={t("deleteTag")}
+              description={t("deleteTagConfirm")}
               onConfirm={() => handleDelete(record.id)}
-              okText="Yes"
-              cancelText="No"
+              okText={t("yes")}
+              cancelText={t("no")}
               okButtonProps={{ danger: true }}
             >
               <Button type="text" danger icon={<DeleteOutlined />} />
@@ -182,9 +184,13 @@ export const TagsPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Title level={2}>Tags</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleOpenModal}>
-          Add Tag
+        <Title level={2}>{t("tags")}</Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleOpenModal}
+        >
+          {t("addTag")}
         </Button>
       </div>
 
@@ -198,15 +204,15 @@ export const TagsPage = () => {
       />
 
       <Modal
-        title="Add New Tag"
+        title={t("addNewTag")}
         open={isModalOpen}
         onOk={handleCreateTag}
         onCancel={handleCloseModal}
         confirmLoading={isCreating}
-        okText="Create"
+        okText={t("create")}
       >
         <Input
-          placeholder="Enter tag name"
+          placeholder={t("enterTagName")}
           value={newTagName}
           onChange={(e) => setNewTagName(e.target.value)}
           onPressEnter={handleCreateTag}

@@ -1,5 +1,10 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { tagsService } from '../services/tags.service.js';
+import { translateError, getLocaleFromHeader, type Locale } from '../lib/errors.js';
+
+function getLocale(request: FastifyRequest): Locale {
+  return getLocaleFromHeader(request.headers['accept-language']);
+}
 
 interface TagParams {
   id: string;
@@ -25,8 +30,9 @@ export async function tagsRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: CreateTagBody }>('/', async (request, reply) => {
     const { name } = request.body;
 
+    const locale = getLocale(request);
     if (!name || name.trim().length === 0) {
-      return reply.status(400).send({ error: 'Name is required' });
+      return reply.status(400).send({ error: translateError('Name is required', locale) });
     }
 
     try {
@@ -34,10 +40,11 @@ export async function tagsRoutes(fastify: FastifyInstance) {
       return reply.status(201).send(tag);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to create tag';
+      const translated = translateError(message, locale);
       if (message === 'Tag already exists') {
-        return reply.status(409).send({ error: message });
+        return reply.status(409).send({ error: translated });
       }
-      return reply.status(500).send({ error: message });
+      return reply.status(500).send({ error: translated });
     }
   });
 
@@ -46,8 +53,9 @@ export async function tagsRoutes(fastify: FastifyInstance) {
     const { id } = request.params;
     const { name } = request.body;
 
+    const locale = getLocale(request);
     if (!name || name.trim().length === 0) {
-      return reply.status(400).send({ error: 'Name is required' });
+      return reply.status(400).send({ error: translateError('Name is required', locale) });
     }
 
     try {
@@ -55,13 +63,14 @@ export async function tagsRoutes(fastify: FastifyInstance) {
       return reply.send(tag);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to update tag';
+      const translated = translateError(message, locale);
       if (message === 'Tag not found') {
-        return reply.status(404).send({ error: message });
+        return reply.status(404).send({ error: translated });
       }
       if (message === 'Tag already exists') {
-        return reply.status(409).send({ error: message });
+        return reply.status(409).send({ error: translated });
       }
-      return reply.status(500).send({ error: message });
+      return reply.status(500).send({ error: translated });
     }
   });
 
@@ -74,13 +83,15 @@ export async function tagsRoutes(fastify: FastifyInstance) {
       return reply.status(204).send();
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to delete tag';
+      const locale = getLocale(request);
+      const translated = translateError(message, locale);
       if (message === 'Tag not found') {
-        return reply.status(404).send({ error: message });
+        return reply.status(404).send({ error: translated });
       }
       if (message.startsWith('Cannot delete tag')) {
-        return reply.status(409).send({ error: message });
+        return reply.status(409).send({ error: translated });
       }
-      return reply.status(500).send({ error: message });
+      return reply.status(500).send({ error: translated });
     }
   });
 }

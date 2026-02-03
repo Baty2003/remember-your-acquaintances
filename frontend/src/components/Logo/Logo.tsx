@@ -14,7 +14,15 @@ export const Logo = ({ size = 32 }: LogoProps) => (
     height={size}
   >
     {/* Card */}
-    <rect x="3" y="4" width="14" height="16" rx="2" fill="#1677ff" stroke="#1677ff" />
+    <rect
+      x="3"
+      y="4"
+      width="14"
+      height="16"
+      rx="2"
+      fill="#1677ff"
+      stroke="#1677ff"
+    />
 
     {/* Person */}
     <circle cx="10" cy="9" r="2" fill="#ffffff" stroke="#ffffff" />

@@ -1,1 +1,1 @@
-export { TextInputTab } from './TextInputTab';
+export { TextInputTab } from "./TextInputTab";

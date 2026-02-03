@@ -1,2 +1,2 @@
-export { NotesModal } from './NotesModal';
-export { NoteDetailsModal } from './NoteDetailsModal';
+export { NotesModal } from "./NotesModal";
+export { NoteDetailsModal } from "./NoteDetailsModal";

@@ -1,1 +1,1 @@
-export { ContactLinksInput } from './ContactLinksInput';
+export { ContactLinksInput } from "./ContactLinksInput";

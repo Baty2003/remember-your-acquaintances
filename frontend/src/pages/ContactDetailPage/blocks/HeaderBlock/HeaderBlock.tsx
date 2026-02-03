@@ -1,4 +1,4 @@
-import { Button, Typography, Popconfirm } from 'antd';
+import { Button, Typography, Popconfirm } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -6,9 +6,10 @@ import {
   UserOutlined,
   ManOutlined,
   WomanOutlined,
-} from '@ant-design/icons';
-import type { Gender, AgeType, HeightType } from '../../../../types';
-import styles from './HeaderBlock.module.css';
+} from "@ant-design/icons";
+import type { Gender, AgeType, HeightType } from "../../../../types";
+import type { TranslationKey } from "../../../../i18n/translations";
+import styles from "./HeaderBlock.module.css";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +25,7 @@ interface HeaderBlockProps {
   onDelete: () => void;
   isDeleting: boolean;
   onViewNotes?: () => void;
+  t: (key: TranslationKey) => string;
 }
 
 export const HeaderBlock = ({
@@ -38,35 +40,42 @@ export const HeaderBlock = ({
   onDelete,
   isDeleting,
   onViewNotes,
+  t,
 }: HeaderBlockProps) => {
   const subtitleParts: string[] = [];
   if (gender) {
-    subtitleParts.push(gender === 'male' ? 'Male' : 'Female');
+    subtitleParts.push(gender === "male" ? t("male") : t("female"));
   }
   if (age) {
-    subtitleParts.push(`${age}${ageType === 'approximate' ? ' (~)' : ''}`);
+    subtitleParts.push(`${age}${ageType === "approximate" ? " (~)" : ""}`);
   }
   if (birthDate) {
-    subtitleParts.push(new Date(birthDate).toLocaleDateString('ru-RU'));
+    subtitleParts.push(new Date(birthDate).toLocaleDateString("ru-RU"));
   }
   if (height) {
-    subtitleParts.push(`${height} cm${heightType === 'approximate' ? ' (~)' : ''}`);
+    subtitleParts.push(
+      `${height} cm${heightType === "approximate" ? " (~)" : ""}`,
+    );
   }
 
   return (
     <div className={styles.header}>
       <div className={styles.mainBlock}>
         <div className={styles.avatar}>
-          {gender === 'male' ? <ManOutlined /> : gender === 'female' ? <WomanOutlined /> : <UserOutlined />}
+          {gender === "male" ? (
+            <ManOutlined />
+          ) : gender === "female" ? (
+            <WomanOutlined />
+          ) : (
+            <UserOutlined />
+          )}
         </div>
         <div className={styles.headerInfo}>
           <Title level={2} className={styles.name}>
             {name}
           </Title>
           {subtitleParts.length > 0 && (
-            <Text className={styles.subtitle}>
-              {subtitleParts.join(' • ')}
-            </Text>
+            <Text className={styles.subtitle}>{subtitleParts.join(" • ")}</Text>
           )}
         </div>
         {onViewNotes && (
@@ -75,24 +84,24 @@ export const HeaderBlock = ({
             icon={<FileTextOutlined />}
             onClick={onViewNotes}
           >
-            View notes
+            {t("viewNotes")}
           </Button>
         )}
       </div>
       <div className={styles.actions}>
         <Button icon={<EditOutlined />} onClick={onEdit}>
-          Edit
+          {t("edit")}
         </Button>
         <Popconfirm
-          title="Delete contact"
-          description="Are you sure you want to delete this contact?"
+          title={t("deleteContact")}
+          description={t("deleteContactConfirm")}
           onConfirm={onDelete}
-          okText="Yes"
-          cancelText="No"
+          okText={t("yes")}
+          cancelText={t("no")}
           okButtonProps={{ danger: true, loading: isDeleting }}
         >
           <Button danger icon={<DeleteOutlined />}>
-            Delete
+            {t("delete")}
           </Button>
         </Popconfirm>
       </div>

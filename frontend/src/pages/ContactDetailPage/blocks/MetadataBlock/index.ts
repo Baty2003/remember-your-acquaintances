@@ -1,1 +1,1 @@
-export { MetadataBlock } from './MetadataBlock';
+export { MetadataBlock } from "./MetadataBlock";

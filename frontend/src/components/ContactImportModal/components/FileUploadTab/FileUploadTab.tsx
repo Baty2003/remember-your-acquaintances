@@ -1,6 +1,6 @@
-import { Upload } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
-import type { UploadFile } from 'antd/es/upload/interface';
+import { Upload } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
+import type { UploadFile } from "antd/es/upload/interface";
 
 const { Dragger } = Upload;
 
@@ -10,7 +10,11 @@ interface FileUploadTabProps {
   onRemove: () => void;
 }
 
-export const FileUploadTab = ({ fileList, onFileSelect, onRemove }: FileUploadTabProps) => {
+export const FileUploadTab = ({
+  fileList,
+  onFileSelect,
+  onRemove,
+}: FileUploadTabProps) => {
   return (
     <Dragger
       accept=".json"

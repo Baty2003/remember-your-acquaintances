@@ -1,1 +1,1 @@
-export { FormatHint } from './FormatHint';
+export { FormatHint } from "./FormatHint";

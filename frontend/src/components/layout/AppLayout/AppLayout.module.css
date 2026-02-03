@@ -22,13 +22,28 @@
   background: #fff;
   padding: 0 24px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #f0f0f0;
 }
 
 .userInfo {
-  margin-right: 16px;
+  margin-right: auto;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.localeToggle {
+  align-items: center;
+}
+
+.localeLabel {
+  font-size: 12px;
+  margin: 0;
 }
 
 .content {

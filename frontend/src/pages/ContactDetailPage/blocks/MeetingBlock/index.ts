@@ -1,1 +1,1 @@
-export { MeetingBlock } from './MeetingBlock';
+export { MeetingBlock } from "./MeetingBlock";

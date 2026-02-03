@@ -1,1 +1,1 @@
-export { ContactDetailsPopover } from './ContactDetailsPopover';
+export { ContactDetailsPopover } from "./ContactDetailsPopover";

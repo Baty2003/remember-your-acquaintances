@@ -1,1 +1,1 @@
-export { MeetingPlaceSelect } from './MeetingPlaceSelect';
+export { MeetingPlaceSelect } from "./MeetingPlaceSelect";

@@ -1,6 +1,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { contactsService, ContactImportItem } from '../services/contacts.service.js';
 import { notesService } from '../services/notes.service.js';
+import { translateError, getLocaleFromHeader, type Locale } from '../lib/errors.js';
+
+function getLocale(request: FastifyRequest): Locale {
+  return getLocaleFromHeader(request.headers['accept-language']);
+}
 
 interface ContactParams {
   id: string;
@@ -93,7 +98,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       const contact = await contactsService.getById(id, request.user.userId);
       return reply.send(contact);
     } catch {
-      return reply.status(404).send({ error: 'Contact not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Contact not found', getLocale(request)) });
     }
   });
 
@@ -145,7 +152,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       await contactsService.delete(id, request.user.userId);
       return reply.status(204).send();
     } catch {
-      return reply.status(404).send({ error: 'Contact not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Contact not found', getLocale(request)) });
     }
   });
 
@@ -155,16 +164,23 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   }>('/import', async (request, reply) => {
     const { contacts } = request.body;
 
+    const locale = getLocale(request);
     if (!contacts || !Array.isArray(contacts)) {
-      return reply.status(400).send({ error: 'Contacts array is required' });
+      return reply
+        .status(400)
+        .send({ error: translateError('Contacts array is required', locale) });
     }
 
     if (contacts.length === 0) {
-      return reply.status(400).send({ error: 'Contacts array cannot be empty' });
+      return reply
+        .status(400)
+        .send({ error: translateError('Contacts array cannot be empty', locale) });
     }
 
     if (contacts.length > 100) {
-      return reply.status(400).send({ error: 'Cannot import more than 100 contacts at once' });
+      return reply
+        .status(400)
+        .send({ error: translateError('Cannot import more than 100 contacts at once', locale) });
     }
 
     const result = await contactsService.importMany(request.user.userId, contacts);
@@ -187,7 +203,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       const contact = await contactsService.updatePhoto(id, request.user.userId, photoUrl);
       return reply.send(contact);
     } catch {
-      return reply.status(404).send({ error: 'Contact not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Contact not found', getLocale(request)) });
     }
   });
 
@@ -201,7 +219,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       const contact = await contactsService.deletePhoto(id, request.user.userId);
       return reply.send(contact);
     } catch {
-      return reply.status(404).send({ error: 'Contact not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Contact not found', getLocale(request)) });
     }
   });
 
@@ -214,7 +234,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     const { title, description } = request.body;
 
     if (!title || title.trim().length === 0) {
-      return reply.status(400).send({ error: 'Title is required' });
+      return reply
+        .status(400)
+        .send({ error: translateError('Title is required', getLocale(request)) });
     }
 
     try {
@@ -224,7 +246,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       });
       return reply.status(201).send(note);
     } catch {
-      return reply.status(404).send({ error: 'Contact not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Contact not found', getLocale(request)) });
     }
   });
 
@@ -237,7 +261,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     const { title, description } = request.body;
 
     if (title !== undefined && (!title || title.trim().length === 0)) {
-      return reply.status(400).send({ error: 'Title cannot be empty' });
+      return reply
+        .status(400)
+        .send({ error: translateError('Title cannot be empty', getLocale(request)) });
     }
 
     try {
@@ -247,7 +273,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       });
       return reply.send(note);
     } catch {
-      return reply.status(404).send({ error: 'Note not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Note not found', getLocale(request)) });
     }
   });
 
@@ -261,7 +289,9 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       await notesService.delete(id, noteId, request.user.userId);
       return reply.status(204).send();
     } catch {
-      return reply.status(404).send({ error: 'Note not found' });
+      return reply
+        .status(404)
+        .send({ error: translateError('Note not found', getLocale(request)) });
     }
   });
 }

@@ -4,7 +4,7 @@ export type {
   LoginCredentials,
   RegisterCredentials,
   AuthResponse,
-} from './auth';
+} from "./auth";
 
 export type {
   Contact,
@@ -24,6 +24,6 @@ export type {
   ContactsState,
   ContactImportItem,
   ImportResult,
-} from './contact';
+} from "./contact";
 
-export type { UserStats } from './stats';
+export type { UserStats } from "./stats";

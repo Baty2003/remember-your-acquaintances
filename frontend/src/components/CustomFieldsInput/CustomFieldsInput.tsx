@@ -1,37 +1,49 @@
-import { Button, Input } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import styles from './CustomFieldsInput.module.css';
+import { Button, Input } from "antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import styles from "./CustomFieldsInput.module.css";
 
 export interface CustomFieldItem {
   name: string;
   value: string;
 }
 
-interface CustomFieldsInputProps {
+export interface CustomFieldsInputProps {
   value?: CustomFieldItem[];
   onChange?: (value: CustomFieldItem[]) => void;
+  fieldNamePlaceholder?: string;
+  valuePlaceholder?: string;
+  addFieldLabel?: string;
 }
 
-export const CustomFieldsInput = ({ value, onChange }: CustomFieldsInputProps) => {
-  const fields =
-    value && value.length > 0 ? value : [{ name: '', value: '' }];
+export const CustomFieldsInput = ({
+  value,
+  onChange,
+  fieldNamePlaceholder = "Field name",
+  valuePlaceholder = "Value",
+  addFieldLabel = "Add field",
+}: CustomFieldsInputProps) => {
+  const fields = value && value.length > 0 ? value : [{ name: "", value: "" }];
 
   const updateFields = (newFields: CustomFieldItem[]) => {
     onChange?.(newFields);
   };
 
   const addField = () => {
-    updateFields([...fields, { name: '', value: '' }]);
+    updateFields([...fields, { name: "", value: "" }]);
   };
 
   const removeField = (index: number) => {
     const newFields = fields.filter((_, i) => i !== index);
-    updateFields(newFields.length > 0 ? newFields : [{ name: '', value: '' }]);
+    updateFields(newFields.length > 0 ? newFields : [{ name: "", value: "" }]);
   };
 
-  const updateField = (index: number, field: 'name' | 'value', fieldValue: string) => {
+  const updateField = (
+    index: number,
+    field: "name" | "value",
+    fieldValue: string,
+  ) => {
     const newFields = fields.map((item, i) =>
-      i === index ? { ...item, [field]: fieldValue } : item
+      i === index ? { ...item, [field]: fieldValue } : item,
     );
     updateFields(newFields);
   };
@@ -42,14 +54,14 @@ export const CustomFieldsInput = ({ value, onChange }: CustomFieldsInputProps) =
         <div key={index} className={styles.fieldRow}>
           <Input
             value={field.name}
-            onChange={(e) => updateField(index, 'name', e.target.value)}
-            placeholder="Field name"
+            onChange={(e) => updateField(index, "name", e.target.value)}
+            placeholder={fieldNamePlaceholder}
             className={styles.nameInput}
           />
           <Input
             value={field.value}
-            onChange={(e) => updateField(index, 'value', e.target.value)}
-            placeholder="Value"
+            onChange={(e) => updateField(index, "value", e.target.value)}
+            placeholder={valuePlaceholder}
             className={styles.valueInput}
           />
           <Button
@@ -67,7 +79,7 @@ export const CustomFieldsInput = ({ value, onChange }: CustomFieldsInputProps) =
         icon={<PlusOutlined />}
         className={styles.addButton}
       >
-        Add field
+        {addFieldLabel}
       </Button>
     </div>
   );

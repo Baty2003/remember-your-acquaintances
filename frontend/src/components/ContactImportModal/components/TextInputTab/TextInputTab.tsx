@@ -1,5 +1,5 @@
-import { Input, Button } from 'antd';
-import styles from './TextInputTab.module.css';
+import { Input, Button } from "antd";
+import styles from "./TextInputTab.module.css";
 
 const { TextArea } = Input;
 
@@ -9,7 +9,11 @@ interface TextInputTabProps {
   onParse: () => void;
 }
 
-export const TextInputTab = ({ value, onChange, onParse }: TextInputTabProps) => {
+export const TextInputTab = ({
+  value,
+  onChange,
+  onParse,
+}: TextInputTabProps) => {
   return (
     <div className={styles.container}>
       <TextArea

@@ -4,4 +4,4 @@ export {
   USERNAME_RULES,
   PASSWORD_RULES,
   CONFIRM_PASSWORD_RULES,
-} from './loginForm';
+} from "./loginForm";

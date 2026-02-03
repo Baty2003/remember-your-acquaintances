@@ -1,1 +1,1 @@
-export { ContactsFiltersComponent as ContactsFilters } from './ContactsFilters';
+export { ContactsFiltersComponent as ContactsFilters } from "./ContactsFilters";

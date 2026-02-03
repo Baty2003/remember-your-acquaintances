@@ -1,7 +1,12 @@
-export type AgeType = 'exact' | 'approximate';
-export type HeightType = 'exact' | 'approximate';
-export type Gender = 'male' | 'female';
-export type ContactLinkType = 'phone' | 'telegram' | 'instagram' | 'vk' | 'other';
+export type AgeType = "exact" | "approximate";
+export type HeightType = "exact" | "approximate";
+export type Gender = "male" | "female";
+export type ContactLinkType =
+  | "phone"
+  | "telegram"
+  | "instagram"
+  | "vk"
+  | "other";
 
 export interface ContactLink {
   id: string;
@@ -102,8 +107,17 @@ export interface ContactFilters {
   hasContact?: boolean;
   metAtFrom?: string;
   metAtTo?: string;
-  sortBy?: 'name' | 'createdAt' | 'updatedAt' | 'metAt' | 'age' | 'gender' | 'height' | 'occupation' | 'meetingPlace';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?:
+    | "name"
+    | "createdAt"
+    | "updatedAt"
+    | "metAt"
+    | "age"
+    | "gender"
+    | "height"
+    | "occupation"
+    | "meetingPlace";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface ContactsState {
@@ -133,7 +147,7 @@ export interface ContactImportItem {
   metAt?: string;
   tags?: string[]; // Tag names - will be matched or created
   meetingPlace?: string; // Meeting place name - will be matched or created
-  links?: Omit<ContactLinkInput, 'type'> & { type: string }[];
+  links?: Omit<ContactLinkInput, "type"> & { type: string }[];
 }
 
 export interface ImportResult {

@@ -1,2 +1,2 @@
-export { ContactsFilters } from './ContactsFilters';
-export { ContactsTable } from './ContactsTable';
+export { ContactsFilters } from "./ContactsFilters";
+export { ContactsTable } from "./ContactsTable";
