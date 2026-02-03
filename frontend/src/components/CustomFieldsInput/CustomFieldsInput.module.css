@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.nameInput {
+  flex: 0 0 200px;
+}
+
+.valueInput {
+  flex: 1;
+}
+
+.deleteButton {
+  flex-shrink: 0;
+}
+
+.addButton {
+  align-self: flex-start;
+}

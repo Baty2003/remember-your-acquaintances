@@ -16,6 +16,7 @@ interface HeaderBlockProps {
   gender?: Gender;
   age?: number;
   ageType?: AgeType;
+  birthDate?: string;
   height?: number;
   heightType?: HeightType;
   onEdit: () => void;
@@ -28,6 +29,7 @@ export const HeaderBlock = ({
   gender,
   age,
   ageType,
+  birthDate,
   height,
   heightType,
   onEdit,
@@ -40,6 +42,9 @@ export const HeaderBlock = ({
   }
   if (age) {
     subtitleParts.push(`${age}${ageType === 'approximate' ? ' (~)' : ''}`);
+  }
+  if (birthDate) {
+    subtitleParts.push(new Date(birthDate).toLocaleDateString('ru-RU'));
   }
   if (height) {
     subtitleParts.push(`${height} cm${heightType === 'approximate' ? ' (~)' : ''}`);

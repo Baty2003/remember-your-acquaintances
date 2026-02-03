@@ -21,23 +21,18 @@
 
 .row {
   display: flex;
-  gap: 16px;
+  gap: 30px;
+  align-items: flex-start;
 }
 
-.ageInput {
-  flex: 1;
-}
 
 .ageTypeInput {
-  flex: 1;
+  min-width: 200px;
 }
 
-.heightInput {
-  flex: 1;
-}
 
 .heightTypeInput {
-  flex: 1;
+  min-width: 200px;
 }
 
 .actions {

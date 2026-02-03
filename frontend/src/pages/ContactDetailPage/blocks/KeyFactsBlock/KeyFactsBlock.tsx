@@ -7,11 +7,25 @@ const { Text } = Typography;
 interface KeyFactsBlockProps {
   occupation?: string;
   occupationDetails?: string;
+  residence?: string;
+  residenceDetails?: string;
 }
 
-export const KeyFactsBlock = ({ occupation, occupationDetails }: KeyFactsBlockProps) => {
+export const KeyFactsBlock = ({ occupation, occupationDetails, residence, residenceDetails }: KeyFactsBlockProps) => {
   return (
     <div className={styles.factsGrid}>
+      {residence && (
+        <div className={styles.factItem}>
+          <Text type="secondary" className={sharedStyles.factLabel}>Place of Residence</Text>
+          <Text className={sharedStyles.factValue}>{residence}</Text>
+        </div>
+      )}
+      {residenceDetails && (
+        <div className={styles.factItem}>
+          <Text type="secondary" className={sharedStyles.factLabel}>Residence Details</Text>
+          <Text className={sharedStyles.factValue}>{residenceDetails}</Text>
+        </div>
+      )}
       {occupation && (
         <div className={styles.factItem}>
           <Text type="secondary" className={sharedStyles.factLabel}>Occupation</Text>
@@ -20,7 +34,7 @@ export const KeyFactsBlock = ({ occupation, occupationDetails }: KeyFactsBlockPr
       )}
       {occupationDetails && (
         <div className={styles.factItem}>
-          <Text type="secondary" className={sharedStyles.factLabel}>Details</Text>
+          <Text type="secondary" className={sharedStyles.factLabel}>Occupation Details</Text>
           <Text className={sharedStyles.factValue}>{occupationDetails}</Text>
         </div>
       )}

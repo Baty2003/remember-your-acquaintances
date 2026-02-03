@@ -16,6 +16,9 @@ export { MeetingPlaceSelect } from './MeetingPlaceSelect';
 // Contact Links
 export { ContactLinksInput } from './ContactLinksInput';
 
+// Custom Fields
+export { CustomFieldsInput } from './CustomFieldsInput';
+
 // Import
 export { ContactImportModal } from './ContactImportModal';
 

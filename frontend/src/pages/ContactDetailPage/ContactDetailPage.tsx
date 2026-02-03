@@ -9,6 +9,7 @@ import {
   KeyFactsBlock,
   MeetingBlock,
   DescriptionBlock,
+  AdditionalInformationBlock,
   ContactLinksBlock,
   TagsBlock,
   NotesBlock,
@@ -32,6 +33,9 @@ export const ContactDetailPage = () => {
     const {
       occupation,
       occupationDetails,
+      residence,
+      residenceDetails,
+      customFields,
       meetingPlace,
       howMet,
       details,
@@ -43,7 +47,7 @@ export const ContactDetailPage = () => {
 
     const items = [];
 
-    if (occupation || occupationDetails) {
+    if (occupation || occupationDetails || residence || residenceDetails) {
       items.push({
         key: 'keyFacts',
         label: 'Key Facts',
@@ -51,8 +55,26 @@ export const ContactDetailPage = () => {
           <KeyFactsBlock
             occupation={occupation}
             occupationDetails={occupationDetails}
+            residence={residence}
+            residenceDetails={residenceDetails}
           />
         ),
+      });
+    }
+
+    if (details) {
+      items.push({
+        key: 'personDetails',
+        label: 'Person Details',
+        children: <DescriptionBlock details={details} />,
+      });
+    }
+
+    if (customFields && Object.keys(customFields).length > 0) {
+      items.push({
+        key: 'additionalInfo',
+        label: 'Additional Information',
+        children: <AdditionalInformationBlock customFields={customFields} />,
       });
     }
 
@@ -67,14 +89,6 @@ export const ContactDetailPage = () => {
             howMet={howMet}
           />
         ),
-      });
-    }
-
-    if (details) {
-      items.push({
-        key: 'description',
-        label: 'Description',
-        children: <DescriptionBlock details={details} />,
       });
     }
 
@@ -158,6 +172,7 @@ export const ContactDetailPage = () => {
     gender,
     age,
     ageType,
+    birthDate,
     height,
     heightType,
     createdAt,
@@ -181,6 +196,7 @@ export const ContactDetailPage = () => {
           gender={gender}
           age={age}
           ageType={ageType}
+          birthDate={birthDate}
           height={height}
           heightType={heightType}
           onEdit={handleEdit}

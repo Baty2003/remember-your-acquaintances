@@ -6,3 +6,4 @@ export { ContactLinksBlock } from "./ContactLinksBlock";
 export { TagsBlock } from "./TagsBlock";
 export { NotesBlock } from "./NotesBlock";
 export { MetadataBlock } from "./MetadataBlock";
+export { AdditionalInformationBlock } from "./AdditionalInformationBlock";

@@ -11,13 +11,17 @@ export interface CreateContactInput {
   gender?: string;
   age?: number;
   ageType?: string;
+  birthDate?: string;
   height?: number;
   heightType?: string;
   occupation?: string;
   occupationDetails?: string;
+  residence?: string;
+  residenceDetails?: string;
   whereMet?: string;
   howMet?: string;
   details?: string;
+  customFields?: Record<string, string>;
   metAt?: string;
   tagIds?: string[];
   meetingPlaceId?: string | null;
@@ -52,10 +56,13 @@ export interface ContactImportItem {
   gender?: string;
   age?: number;
   ageType?: string;
+  birthDate?: string;
   height?: number;
   heightType?: string;
   occupation?: string;
   occupationDetails?: string;
+  residence?: string;
+  residenceDetails?: string;
   whereMet?: string;
   howMet?: string;
   details?: string;
@@ -401,10 +408,13 @@ export const contactsService = {
             gender: item.gender || null,
             age: item.age || null,
             ageType: item.ageType || null,
+            birthDate: item.birthDate ? new Date(item.birthDate) : null,
             height: item.height || null,
             heightType: item.heightType || null,
             occupation: item.occupation || null,
             occupationDetails: item.occupationDetails || null,
+            residence: item.residence || null,
+            residenceDetails: item.residenceDetails || null,
             whereMet: item.whereMet || null,
             howMet: item.howMet || null,
             details: item.details || null,

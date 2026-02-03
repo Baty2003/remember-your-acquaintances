@@ -27,13 +27,17 @@ model Contact {
   gender            String?  // 'male' | 'female'
   age               Int?
   ageType           String?  // 'exact' | 'approximate'
+  birthDate         DateTime?
   height            Int?
   heightType        String?  // 'exact' | 'approximate'
   occupation        String?
   occupationDetails String?
+  residence         String?
+  residenceDetails  String?
   whereMet          String?
   howMet            String?
   details           String?
+  customFields      Json?    // { "fieldName": "value", ... }
   metAt             DateTime @default(now())
   photo             String?
   createdAt         DateTime @default(now())
