@@ -108,7 +108,7 @@ export async function contactsRoutes(fastify: FastifyInstance) {
   fastify.post<{
     Body: CreateContactBody;
   }>('/', async (request, reply) => {
-    const { name, ...rest } = request.body;
+    const { name, height, ...rest } = request.body;
 
     if (!name || name.trim().length === 0) {
       return reply.status(400).send({ error: 'Name is required' });
@@ -117,6 +117,7 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     const contact = await contactsService.create(request.user.userId, {
       name,
       ...rest,
+      height: height !== undefined ? Number(height) : undefined,
     });
     return reply.status(201).send(contact);
   });
@@ -127,9 +128,14 @@ export async function contactsRoutes(fastify: FastifyInstance) {
     Body: UpdateContactBody;
   }>('/:id', async (request, reply) => {
     const { id } = request.params;
+    const { height, ...rest } = request.body;
+    const updateData = {
+      ...rest,
+      ...(height !== undefined && { height: Number(height) }),
+    };
 
     try {
-      const contact = await contactsService.update(id, request.user.userId, request.body);
+      const contact = await contactsService.update(id, request.user.userId, updateData);
       return reply.send(contact);
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });

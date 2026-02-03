@@ -147,7 +147,7 @@ export interface ContactImportItem {
   metAt?: string;
   tags?: string[]; // Tag names - will be matched or created
   meetingPlace?: string; // Meeting place name - will be matched or created
-  links?: Omit<ContactLinkInput, "type"> & { type: string }[];
+  links?: { type: string; label?: string; value: string }[];
 }
 
 export interface ImportResult {

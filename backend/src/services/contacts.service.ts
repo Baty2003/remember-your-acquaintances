@@ -341,13 +341,17 @@ export const contactsService = {
       where: { userId },
       select: { id: true, name: true },
     });
-    const tagMap = new Map(existingTags.map((t) => [t.name.toLowerCase(), t.id]));
+    const tagMap = new Map<string, string>(
+      existingTags.map((t: { id: string; name: string }) => [t.name.toLowerCase(), t.id])
+    );
 
     const existingPlaces = await prisma.meetingPlace.findMany({
       where: { userId },
       select: { id: true, name: true },
     });
-    const placeMap = new Map(existingPlaces.map((p) => [p.name.toLowerCase(), p.id]));
+    const placeMap = new Map<string, string>(
+      existingPlaces.map((p: { id: string; name: string }) => [p.name.toLowerCase(), p.id])
+    );
 
     // Helper: find or create tag
     const resolveTag = async (tagName: string): Promise<string> => {
