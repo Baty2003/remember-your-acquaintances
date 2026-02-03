@@ -11,6 +11,9 @@ export {
   useDeleteContactMutation,
   useDeleteAllContactsMutation,
   useImportContactsMutation,
+  useCreateNoteMutation,
+  useUpdateNoteMutation,
+  useDeleteNoteMutation,
 } from './contactsApi';
 
 export { statsApi, useGetStatsQuery } from './statsApi';

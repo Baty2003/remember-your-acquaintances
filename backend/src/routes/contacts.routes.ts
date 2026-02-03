@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { contactsService, ContactImportItem } from '../services/contacts.service.js';
+import { notesService } from '../services/notes.service.js';
 
 interface ContactParams {
   id: string;
@@ -201,6 +202,66 @@ export async function contactsRoutes(fastify: FastifyInstance) {
       return reply.send(contact);
     } catch {
       return reply.status(404).send({ error: 'Contact not found' });
+    }
+  });
+
+  // POST /api/contacts/:id/notes - Create note
+  fastify.post<{
+    Params: ContactParams;
+    Body: { title: string; description: string };
+  }>('/:id/notes', async (request, reply) => {
+    const { id } = request.params;
+    const { title, description } = request.body;
+
+    if (!title || title.trim().length === 0) {
+      return reply.status(400).send({ error: 'Title is required' });
+    }
+
+    try {
+      const note = await notesService.create(id, request.user.userId, {
+        title,
+        description: description || '',
+      });
+      return reply.status(201).send(note);
+    } catch {
+      return reply.status(404).send({ error: 'Contact not found' });
+    }
+  });
+
+  // PUT /api/contacts/:id/notes/:noteId - Update note
+  fastify.put<{
+    Params: ContactParams & { noteId: string };
+    Body: { title?: string; description?: string };
+  }>('/:id/notes/:noteId', async (request, reply) => {
+    const { id, noteId } = request.params;
+    const { title, description } = request.body;
+
+    if (title !== undefined && (!title || title.trim().length === 0)) {
+      return reply.status(400).send({ error: 'Title cannot be empty' });
+    }
+
+    try {
+      const note = await notesService.update(id, noteId, request.user.userId, {
+        title,
+        description,
+      });
+      return reply.send(note);
+    } catch {
+      return reply.status(404).send({ error: 'Note not found' });
+    }
+  });
+
+  // DELETE /api/contacts/:id/notes/:noteId - Delete note
+  fastify.delete<{
+    Params: ContactParams & { noteId: string };
+  }>('/:id/notes/:noteId', async (request, reply) => {
+    const { id, noteId } = request.params;
+
+    try {
+      await notesService.delete(id, noteId, request.user.userId);
+      return reply.status(204).send();
+    } catch {
+      return reply.status(404).send({ error: 'Note not found' });
     }
   });
 }

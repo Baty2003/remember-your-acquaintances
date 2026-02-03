@@ -1,0 +1,84 @@
+.modal :global(.ant-modal-body) {
+  padding-top: 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 !important;
+  flex: 1;
+  min-width: 0;
+}
+
+.titleInput {
+  flex: 1;
+}
+
+.actions {
+  flex-shrink: 0;
+  margin-right: 40px;
+}
+
+.meta {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.divider {
+  margin: 12px 0 16px 0;
+}
+
+.contentSection {
+  margin-bottom: 8px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.content {
+  margin: 0 !important;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.85);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.contentInput {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.contentSectionWithEdit {
+  position: relative;
+}
+
+.contentEditIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+}
+
+.contentEditIcon:hover {
+  color: rgba(0, 0, 0, 0.85);
+}

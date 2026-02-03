@@ -9,8 +9,14 @@
   min-height: 400px;
 }
 
-.backButton {
+.topActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
+}
+
+.backButton {
   padding-left: 0;
 }
 

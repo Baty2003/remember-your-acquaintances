@@ -2,6 +2,7 @@ import { Button, Typography, Popconfirm } from 'antd';
 import {
   EditOutlined,
   DeleteOutlined,
+  FileTextOutlined,
   UserOutlined,
   ManOutlined,
   WomanOutlined,
@@ -22,6 +23,7 @@ interface HeaderBlockProps {
   onEdit: () => void;
   onDelete: () => void;
   isDeleting: boolean;
+  onViewNotes?: () => void;
 }
 
 export const HeaderBlock = ({
@@ -35,6 +37,7 @@ export const HeaderBlock = ({
   onEdit,
   onDelete,
   isDeleting,
+  onViewNotes,
 }: HeaderBlockProps) => {
   const subtitleParts: string[] = [];
   if (gender) {
@@ -52,17 +55,28 @@ export const HeaderBlock = ({
 
   return (
     <div className={styles.header}>
-      <div className={styles.avatar}>
-        {gender === 'male' ? <ManOutlined /> : gender === 'female' ? <WomanOutlined /> : <UserOutlined />}
-      </div>
-      <div className={styles.headerInfo}>
-        <Title level={2} className={styles.name}>
-          {name}
-        </Title>
-        {subtitleParts.length > 0 && (
-          <Text className={styles.subtitle}>
-            {subtitleParts.join(' • ')}
-          </Text>
+      <div className={styles.mainBlock}>
+        <div className={styles.avatar}>
+          {gender === 'male' ? <ManOutlined /> : gender === 'female' ? <WomanOutlined /> : <UserOutlined />}
+        </div>
+        <div className={styles.headerInfo}>
+          <Title level={2} className={styles.name}>
+            {name}
+          </Title>
+          {subtitleParts.length > 0 && (
+            <Text className={styles.subtitle}>
+              {subtitleParts.join(' • ')}
+            </Text>
+          )}
+        </div>
+        {onViewNotes && (
+          <Button
+            type="primary"
+            icon={<FileTextOutlined />}
+            onClick={onViewNotes}
+          >
+            View notes
+          </Button>
         )}
       </div>
       <div className={styles.actions}>

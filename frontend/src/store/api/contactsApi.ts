@@ -7,6 +7,7 @@ import type {
   ContactFilters,
   ContactImportItem,
   ImportResult,
+  Note,
 } from '../../types';
 
 export const contactsApi = baseApi.injectEndpoints({
@@ -114,6 +115,44 @@ export const contactsApi = baseApi.injectEndpoints({
         'MeetingPlaces',
       ],
     }),
+
+    createNote: builder.mutation<Note, { contactId: string; title: string; description: string }>({
+      query: ({ contactId, title, description }) => ({
+        url: `/api/contacts/${contactId}/notes`,
+        method: 'POST',
+        body: { title, description },
+      }),
+      invalidatesTags: (_, __, { contactId }) => [
+        { type: 'Contact', id: contactId },
+        'Stats',
+      ],
+    }),
+
+    updateNote: builder.mutation<
+      Note,
+      { contactId: string; noteId: string; title?: string; description?: string }
+    >({
+      query: ({ contactId, noteId, title, description }) => ({
+        url: `/api/contacts/${contactId}/notes/${noteId}`,
+        method: 'PUT',
+        body: { title, description },
+      }),
+      invalidatesTags: (_, __, { contactId }) => [
+        { type: 'Contact', id: contactId },
+        'Stats',
+      ],
+    }),
+
+    deleteNote: builder.mutation<void, { contactId: string; noteId: string }>({
+      query: ({ contactId, noteId }) => ({
+        url: `/api/contacts/${contactId}/notes/${noteId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_, __, { contactId }) => [
+        { type: 'Contact', id: contactId },
+        'Stats',
+      ],
+    }),
   }),
 });
 
@@ -125,4 +164,7 @@ export const {
   useDeleteContactMutation,
   useDeleteAllContactsMutation,
   useImportContactsMutation,
+  useCreateNoteMutation,
+  useUpdateNoteMutation,
+  useDeleteNoteMutation,
 } = contactsApi;

@@ -19,6 +19,9 @@ export { ContactLinksInput } from './ContactLinksInput';
 // Custom Fields
 export { CustomFieldsInput } from './CustomFieldsInput';
 
+// Notes
+export { NotesModal, NoteDetailsModal } from './NotesModal';
+
 // Import
 export { ContactImportModal } from './ContactImportModal';
 

@@ -4,6 +4,17 @@
   gap: 20px;
 }
 
+.mainBlock {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+}
+
+.headerInfo {
+}
+
 .avatar {
   width: 72px;
   height: 72px;
@@ -15,10 +26,6 @@
   font-size: 28px;
   color: white;
   flex-shrink: 0;
-}
-
-.headerInfo {
-  flex: 1;
 }
 
 .name {

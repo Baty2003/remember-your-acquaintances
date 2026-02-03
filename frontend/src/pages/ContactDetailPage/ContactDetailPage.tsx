@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, Button, Spin, Empty, Collapse } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useGetContactQuery, useDeleteContactMutation } from '../../store';
+import { NotesModal } from '../../components';
 import { message } from 'antd';
 import {
   HeaderBlock,
@@ -26,6 +27,7 @@ export const ContactDetailPage = () => {
   });
 
   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const [notesModalOpen, setNotesModalOpen] = useState(false);
 
   const collapseItems = useMemo(() => {
     if (!currentContact) return [];
@@ -181,14 +183,16 @@ export const ContactDetailPage = () => {
 
   return (
     <div className={styles.container}>
-      <Button
-        type="text"
-        icon={<ArrowLeftOutlined />}
-        onClick={handleBack}
-        className={styles.backButton}
-      >
-        Back to Contacts
-      </Button>
+      <div className={styles.topActions}>
+        <Button
+          type="text"
+          icon={<ArrowLeftOutlined />}
+          onClick={handleBack}
+          className={styles.backButton}
+        >
+          Back to Contacts
+        </Button>
+      </div>
 
       <Card className={styles.card}>
         <HeaderBlock
@@ -202,6 +206,7 @@ export const ContactDetailPage = () => {
           onEdit={handleEdit}
           onDelete={handleDelete}
           isDeleting={isDeleting}
+          onViewNotes={() => setNotesModalOpen(true)}
         />
 
         {collapseItems.length > 0 && (
@@ -215,6 +220,13 @@ export const ContactDetailPage = () => {
 
         <MetadataBlock createdAt={createdAt} updatedAt={updatedAt} />
       </Card>
+
+      <NotesModal
+        open={notesModalOpen}
+        onClose={() => setNotesModalOpen(false)}
+        contactId={id!}
+        notes={currentContact.notes || []}
+      />
     </div>
   );
 };
